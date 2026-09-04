@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="robots" content="noindex" />
+  <title>Checkout — Possiber</title>
+  <!--
+    ==========================================================================
+    Possiber checkout page (Paddle Billing / Paddle.js v2)
+    ==========================================================================
+    WHY THIS FILE EXISTS
+    Paddle Billing checkout can ONLY be opened by Paddle's JavaScript library
+    running on a real, approved web page. It cannot be opened by a plain URL,
+    and it cannot run inside the browser extension itself (extension security
+    rules block the remote Paddle script). So the extension and the landing
+    page both open THIS page in a new tab, and this page opens the Paddle
+    checkout overlay.
+
+    HOW IT'S CALLED
+      checkout.html?plan=monthly&uid=<supabase user id>&email=<user email>
+      checkout.html?plan=annual
+      checkout.html?plan=lifetime
+    - plan  : which thing to buy (monthly | annual | lifetime). Required.
+    - uid   : the buyer's Supabase user id (sent by the extension when the
+              user is signed in). Lets the webhook link the purchase to them.
+    - email : pre-fills the email box so the buyer can't mistype it.
+
+    THIS PAGE IS THE SINGLE SOURCE OF TRUTH for price IDs and the token.
+    ==========================================================================
+  -->
+  <style>
+    :root { color-scheme: light dark; }
+    * { box-sizing: border-box; }
+    html, body { height: 100%; margin: 0; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      background: radial-gradient(1200px 600px at 50% -10%, #10343a 0%, #0a1416 60%, #070d0f 100%);
+      color: #e8f1f2;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 24px;
+    }
+    .card {
+      width: 100%;
+      max-width: 460px;
+      background: rgba(255, 255, 255, 0.04);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      border-radius: 18px;
+      padding: 32px 28px;
+      text-align: center;
+      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.45);
+      backdrop-filter: blur(6px);
+    }
+    .logo {
+      font-weight: 800;
+      letter-spacing: 0.5px;
+      font-size: 20px;
+      color: #6fe3d2;
+      margin-bottom: 18px;
+    }
+    h1 { font-size: 22px; margin: 0 0 8px; }
+    p { color: #a9c3c6; line-height: 1.5; margin: 8px 0; font-size: 15px; }
+    .plan-name { color: #6fe3d2; font-weight: 700; }
+    .spinner {
+      width: 34px; height: 34px; margin: 18px auto;
+      border: 3px solid rgba(255, 255, 255, 0.15);
+      border-top-color: #6fe3d2;
+      border-radius: 50%;
+      animation: spin 0.8s linear infinite;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+    .btn {
+      display: inline-block;
+      margin-top: 18px;
+      padding: 12px 22px;
+      border-radius: 10px;
+      border: none;
+      background: #6fe3d2;
+      color: #04211d;
+      font-weight: 700;
+      font-size: 15px;
+      cursor: pointer;
+      text-decoration: none;
+    }
+    .btn.ghost { background: transparent; color: #6fe3d2; border: 1px solid rgba(111,227,210,0.5); }
+    .hidden { display: none; }
+    .ok { color: #6fe3d2; font-size: 42px; line-height: 1; margin-bottom: 6px; }
+    .err { color: #ff9d9d; }
+    .muted { color: #7d9599; font-size: 13px; margin-top: 16px; }
+  </style>
+</head>
+<body>
+  <div class="card">
+    <div class="logo">Possiber</div>
+
+    <!-- STATE: opening checkout -->
+    <div id="state-loading">
+      <h1>Opening secure checkout…</h1>
+      <p>You're purchasing <span class="plan-name" id="plan-label">Possiber Pro</span>.</p>
+      <div class="spinner"></div>
+      <p class="muted">Payments are processed securely by Paddle.</p>
+    </div>
+
+    <!-- STATE: checkout closed without buying -->
+    <div id="state-closed" class="hidden">
+      <h1>Checkout closed</h1>
+      <p>No worries — nothing was charged.</p>
+      <button class="btn" id="reopen-btn">Reopen checkout</button>
+    </div>
+
+    <!-- STATE: success -->
+    <div id="state-success" class="hidden">
+      <div class="ok">✓</div>
+      <h1>Payment complete</h1>
+      <p>Thank you! Your Possiber Pro access is being activated.</p>
+      <p class="muted" id="success-hint">Head back to the Possiber extension — Pro unlocks automatically within a few seconds. You can close this tab.</p>
+    </div>
+
+    <!-- STATE: error -->
+    <div id="state-error" class="hidden">
+      <h1 class="err">Something went wrong</h1>
+      <p id="error-message">We couldn't start the checkout.</p>
+      <a class="btn ghost" href="index.html">Back to Possiber</a>
+    </div>
+  </div>
+
+  <!-- Paddle Billing JS (v2). This is the only external script this page loads. -->
+  <script src="https://cdn.paddle.com/paddle/v2/paddle.js"></script>
+  <script>
+    // ========================================================================
+    // CONFIG — EDIT THESE THREE THINGS
+    // ========================================================================
+
+    // 1) Environment: "sandbox" while testing, "production" when you go live.
+    const PADDLE_ENV = "production";
+
+    // 2) Your Paddle CLIENT-SIDE TOKEN (safe to publish — it is NOT a secret).
+    //    Get it in Paddle → Developer Tools → Authentication → "Client-side tokens".
+    //    Sandbox tokens start with "test_", live tokens start with "live_".
+    //    >>> PASTE YOUR TOKEN BETWEEN THE QUOTES BELOW <<<
+    const PADDLE_CLIENT_TOKEN = "live_57a9815395831be7a369b8370a1";
+
+    // 3) Price IDs — the SINGLE SOURCE OF TRUTH for what each plan costs.
+    //    These must be the "pri_..." IDs from your Paddle catalog. Verify them
+    //    in Paddle → Catalog → Products/Prices. Update here if they ever change.
+    const PLANS = {
+      monthly:  "pri_01kztfxew34kfnmxkfcn97ce2d",
+      annual:   "pri_01kyt1dkjt1p51d39m022rm53n",
+      lifetime: "pri_01kyt13ncdtam6y7w05w6k04v1",
+    };
+
+    const PLAN_LABELS = {
+      monthly:  "Possiber Pro (monthly)",
+      annual:   "Possiber Pro (annual)",
+      lifetime: "Possiber Pro (lifetime)",
+    };
+    // ========================================================================
+
+    function show(stateId) {
+      for (const id of ["state-loading", "state-closed", "state-success", "state-error"]) {
+        document.getElementById(id).classList.toggle("hidden", id !== stateId);
+      }
+    }
+    function fail(msg) {
+      document.getElementById("error-message").textContent = msg;
+      show("state-error");
+    }
+
+    // Read the query string: ?plan=...&uid=...&email=...
+    const qs = new URLSearchParams(location.search);
+    const plan = (qs.get("plan") || "").toLowerCase();
+    const uid = qs.get("uid") || "";
+    const email = qs.get("email") || "";
+    // Allow an explicit price_id override (advanced/testing); otherwise map from plan.
+    const priceId = qs.get("price_id") || PLANS[plan];
+
+    document.getElementById("plan-label").textContent = PLAN_LABELS[plan] || "Possiber Pro";
+
+    function openCheckout() {
+      const items = [{ priceId: priceId, quantity: 1 }];
+      const customData = {};
+      if (uid) customData.supabase_user_id = uid;
+      if (email) customData.email = email;
+
+      Paddle.Checkout.open({
+        items: items,
+        customer: email ? { email: email } : undefined,
+        customData: customData,
+        settings: {
+          displayMode: "overlay",
+          theme: "dark",
+          allowLogout: !email, // if we already know the email, lock it in
+        },
+      });
+    }
+    document.getElementById("reopen-btn").addEventListener("click", openCheckout);
+
+    // ---- Boot ----
+    (function boot() {
+      if (!plan && !qs.get("price_id")) {
+        return fail("No plan was selected. Please return and pick a plan.");
+      }
+      if (!priceId) {
+        return fail('Unknown plan "' + plan + '". Please return and try again.');
+      }
+      if (PADDLE_CLIENT_TOKEN.startsWith("PASTE_")) {
+        return fail("This checkout isn't fully configured yet (missing Paddle token). If you're the site owner, add your Paddle client-side token in checkout.html.");
+      }
+      if (typeof Paddle === "undefined") {
+        return fail("The payment library failed to load. Please check your connection and refresh.");
+      }
+
+      try {
+        if (PADDLE_ENV === "sandbox") {
+          Paddle.Environment.set("sandbox");
+        }
+        Paddle.Initialize({
+          token: PADDLE_CLIENT_TOKEN,
+          eventCallback: function (evt) {
+            // evt.name is the event, e.g. "checkout.completed", "checkout.closed"
+            switch (evt && evt.name) {
+              case "checkout.completed":
+                show("state-success");
+                break;
+              case "checkout.closed":
+                // Only treat as "closed" if we're not already showing success.
+                if (document.getElementById("state-success").classList.contains("hidden")) {
+                  show("state-closed");
+                }
+                break;
+              case "checkout.error":
+                fail("The payment couldn't be completed. No charge was made. Please try again.");
+                break;
+            }
+          },
+        });
+        openCheckout();
+      } catch (e) {
+        fail("Couldn't start the checkout: " + (e && e.message ? e.message : e));
+      }
+    })();
+  </script>
+</body>
+</html>

@@ -1,0 +1,1634 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Possiber — YouTube Focus Mode for Serious Learners</title>
+    <meta
+      name="description"
+      content="Turn your YouTube playlists into a distraction-free study environment. No recommendations. No comments. Just your queue."
+    />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500&family=Space+Mono:wght@400;700&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="style.css" />
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <style>
+      /* HERO */
+      .hero {
+        padding: clamp(56px, 10vw, 110px) 0 var(--space-xl);
+      }
+      .hero-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 56px;
+        align-items: center;
+      }
+      .hero h1 {
+        font-size: clamp(38px, 6vw, 62px);
+        margin-bottom: var(--space-lg);
+      }
+      .hero h1 .accent {
+        color: var(--teal);
+      }
+      .hero p.sub {
+        font-size: clamp(17px, 2.2vw, 20px);
+        color: var(--text-muted);
+        max-width: 30ch;
+        margin-bottom: var(--space-lg);
+      }
+      .hero-cta {
+        display: flex;
+        gap: 14px;
+        flex-wrap: wrap;
+        align-items: center;
+      }
+      .hero-note {
+        font-family: var(--font-mono);
+        font-size: 12px;
+        color: var(--text-faint);
+        margin-top: 18px;
+      }
+      .browsers {
+        display: flex;
+        gap: 14px;
+        margin-top: 22px;
+        align-items: center;
+        color: var(--text-faint);
+        font-size: 13px;
+      }
+      .browsers span {
+        font-family: var(--font-mono);
+        letter-spacing: 0.05em;
+      }
+
+      /* HERO VISUAL — the "focus queue" */
+      .device {
+        background: var(--bg-card);
+        border: 1px solid var(--border);
+        border-radius: var(--radius-lg);
+        padding: 18px;
+        box-shadow: var(--shadow);
+        position: relative;
+        overflow: hidden;
+      }
+      .device::before {
+        content: "";
+        position: absolute;
+        inset: 0;
+        background: radial-gradient(
+          120% 80% at 80% 0%,
+          var(--teal-subtle),
+          transparent 60%
+        );
+        pointer-events: none;
+      }
+      .device-bar {
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        margin-bottom: 16px;
+      }
+      .dot {
+        width: 10px;
+        height: 10px;
+        background: var(--border);
+      }
+      .device-title {
+        font-family: var(--font-mono);
+        font-size: 11px;
+        color: var(--text-faint);
+        margin-left: 8px;
+        letter-spacing: 0.08em;
+      }
+      .timer {
+        margin-left: auto;
+        font-family: var(--font-mono);
+        font-weight: 700;
+        font-size: 13px;
+        color: var(--teal);
+        background: var(--teal-subtle);
+        padding: 4px 10px;
+        display: flex;
+        align-items: center;
+        gap: 6px;
+      }
+      .timer .pulse {
+        width: 6px;
+        height: 6px;
+        background: var(--teal);
+        animation: pulse 1.6s ease-in-out infinite;
+      }
+      @keyframes pulse {
+        0%,
+        100% {
+          opacity: 1;
+        }
+        50% {
+          opacity: 0.3;
+        }
+      }
+
+      .queue-item {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        padding: 11px 12px;
+        border-radius: var(--radius);
+        border: 1px solid transparent;
+      }
+      .queue-item .n {
+        font-family: var(--font-mono);
+        font-size: 12px;
+        color: var(--text-faint);
+        width: 20px;
+      }
+      .queue-item .thumb {
+        width: 46px;
+        height: 30px;
+        background: var(--bg-raised);
+        flex-shrink: 0;
+        border: 1px solid var(--border);
+      }
+      .queue-item .meta {
+        min-width: 0;
+      }
+      .queue-item .meta .t {
+        font-size: 13px;
+        color: var(--text);
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+      }
+      .queue-item .meta .d {
+        font-family: var(--font-mono);
+        font-size: 11px;
+        color: var(--text-faint);
+      }
+      .queue-item.active {
+        background: var(--teal-subtle);
+        border-color: var(--teal);
+      }
+      .queue-item.active .n {
+        color: var(--teal);
+      }
+      /* the noise being dissolved */
+      .noise {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        padding: 10px 12px;
+        border-radius: var(--radius);
+        color: var(--text-faint);
+        font-size: 13px;
+        opacity: 0.35;
+        text-decoration: line-through;
+        text-decoration-color: var(--teal-dim);
+      }
+      .noise .x {
+        color: var(--teal-dim);
+        font-family: var(--font-mono);
+      }
+      .divider-label {
+        font-family: var(--font-mono);
+        font-size: 10px;
+        letter-spacing: 0.12em;
+        color: var(--text-faint);
+        text-transform: uppercase;
+        margin: 14px 4px 6px;
+      }
+
+      @media (max-width: 860px) {
+        .hero-grid {
+          grid-template-columns: 1fr;
+          gap: 40px;
+        }
+        .hero p.sub {
+          max-width: none;
+        }
+      }
+      /* SECTIONS */
+      section {
+        padding: var(--space-xl) 0;
+      }
+      .section-head {
+        max-width: 46ch;
+        margin-bottom: var(--space-lg);
+      }
+      .section-head h2 {
+        font-size: clamp(28px, 4vw, 40px);
+        margin-bottom: 14px;
+      }
+      .section-head p {
+        color: var(--text-muted);
+        font-size: 17px;
+      }
+
+      /* FEATURES */
+      .features {
+        border-top: 1px solid var(--border);
+      }
+      .feature-grid {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 20px;
+      }
+      .card {
+        background: var(--bg-card);
+        border: 1px solid var(--border);
+        border-radius: var(--radius-lg);
+        padding: 28px;
+        transition:
+          border-color 0.2s ease,
+          transform 0.2s ease;
+      }
+      .card:hover {
+        border-color: var(--teal);
+        transform: translateY(-3px);
+      }
+      .card .num {
+        font-family: var(--font-mono);
+        font-size: 12px;
+        color: var(--teal);
+        letter-spacing: 0.1em;
+      }
+      .card h3 {
+        font-size: 20px;
+        margin: 18px 0 10px;
+      }
+      .card p {
+        color: var(--text-muted);
+        font-size: 15px;
+      }
+      @media (max-width: 780px) {
+        .feature-grid {
+          grid-template-columns: 1fr;
+        }
+      }
+
+      /* PRICING */
+      .pricing {
+        border-top: 1px solid var(--border);
+      }
+      /* billing toggle */
+      .billing-toggle {
+        display: flex;
+        align-items: center;
+        gap: 16px;
+        margin-bottom: var(--space-lg);
+        font-family: var(--font-mono);
+        font-size: 12px;
+        letter-spacing: 0.14em;
+        text-transform: uppercase;
+      }
+      .billing-toggle .seg { color: var(--text-faint); transition: color 0.2s ease; }
+      .billing-toggle .seg.active { color: var(--text); }
+      .bt-switch {
+        width: 52px;
+        height: 26px;
+        background: var(--bg-raised);
+        border: 1px solid var(--border);
+        position: relative;
+        cursor: pointer;
+        flex-shrink: 0;
+        padding: 0;
+      }
+      .bt-switch::after {
+        content: "";
+        position: absolute;
+        top: 3px;
+        left: 3px;
+        width: 18px;
+        height: 18px;
+        background: var(--teal);
+        transition: transform 0.2s ease;
+      }
+      body.yearly .bt-switch::after { transform: translateX(26px); }
+      .bt-save {
+        color: var(--teal);
+        border: 1px solid var(--teal);
+        padding: 4px 10px;
+      }
+      .price-grid {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 20px;
+        align-items: start;
+      }
+      .plan {
+        background: var(--bg-card);
+        border: 1px solid var(--border);
+        border-radius: var(--radius-lg);
+        padding: 32px;
+        position: relative;
+      }
+      .plan.pro {
+        border-color: var(--teal);
+        background: linear-gradient(
+          180deg,
+          var(--teal-subtle),
+          var(--bg-card) 40%
+        );
+      }
+      /* BEST VALUE badge */
+      .plan .badge {
+        position: absolute;
+        top: -1px;
+        left: -1px;
+        background: var(--teal);
+        color: var(--bg);
+        font-family: var(--font-mono);
+        font-size: 10px;
+        font-weight: 700;
+        letter-spacing: 0.12em;
+        text-transform: uppercase;
+        padding: 6px 12px;
+      }
+      .plan.pro { padding-top: 44px; }
+      /* plan head: name + PLAN.0X label */
+      .plan-head {
+        display: flex;
+        align-items: baseline;
+        justify-content: space-between;
+        margin-bottom: 14px;
+      }
+      .plan .tag {
+        font-family: var(--font-head);
+        font-size: 22px;
+        font-weight: 600;
+        color: var(--text);
+        letter-spacing: -0.02em;
+        text-transform: none;
+      }
+      .plan .plan-no {
+        font-family: var(--font-mono);
+        font-size: 11px;
+        letter-spacing: 0.14em;
+        color: var(--text-faint);
+      }
+      .plan.pro .tag {
+        color: var(--teal);
+      }
+      /* price switching: show/hide by billing period */
+      .price-monthly, .price-yearly { display: none; }
+      body:not(.yearly) .plan .price-monthly { display: block; }
+      body.yearly .plan .price-yearly { display: block; }
+      .plan .amount {
+        font-family: var(--font-head);
+        font-size: 44px;
+        font-weight: 700;
+        margin: 14px 0 4px;
+        letter-spacing: -0.03em;
+      }
+      .plan .amount small {
+        font-size: 16px;
+        font-weight: 400;
+        color: var(--text-muted);
+        font-family: var(--font-body);
+      }
+      .plan .yearly {
+        font-family: var(--font-mono);
+        font-size: 12px;
+        color: var(--text-faint);
+        margin-bottom: 22px;
+        min-height: 16px;
+      }
+      .plan .yearly .hl { color: var(--teal); }
+      .plan ul {
+        list-style: none;
+        margin-bottom: 26px;
+      }
+      .plan li {
+        display: flex;
+        gap: 10px;
+        align-items: flex-start;
+        padding: 7px 0;
+        font-size: 15px;
+        color: var(--text);
+      }
+      .plan li .check {
+        color: var(--teal);
+        flex-shrink: 0;
+        font-weight: 700;
+      }
+      .plan .btn {
+        width: 100%;
+        text-align: center;
+      }
+      @media (max-width: 640px) {
+        .price-grid {
+          grid-template-columns: 1fr;
+        }
+        .plan.pro { padding-top: 32px; }
+        .plan .badge { position: static; margin-bottom: 16px; display: inline-block; }
+      }
+      /* FAQ */
+      .faq {
+        border-top: 1px solid var(--border);
+      }
+      .faq-wrap {
+        max-width: 760px;
+      }
+      details {
+        border-bottom: 1px solid var(--border);
+        padding: 4px 0;
+      }
+      details summary {
+        cursor: pointer;
+        list-style: none;
+        padding: 20px 40px 20px 0;
+        font-family: var(--font-head);
+        font-weight: 500;
+        font-size: 18px;
+        position: relative;
+        color: var(--text);
+      }
+      details summary::-webkit-details-marker {
+        display: none;
+      }
+      details summary::after {
+        content: "+";
+        position: absolute;
+        right: 4px;
+        top: 16px;
+        font-size: 24px;
+        color: var(--teal);
+        transition: transform 0.2s ease;
+        font-weight: 400;
+      }
+      details[open] summary::after {
+        transform: rotate(45deg);
+      }
+      details p {
+        padding: 0 40px 22px 0;
+        color: var(--text-muted);
+        font-size: 15px;
+      }
+    </style>
+  </head>
+  <body>
+    <nav>
+      <div class="wrap nav-inner">
+        <a href="#" class="logo"><span class="logo-mark">P</span> Possiber</a>
+        <div class="nav-links">
+          <a href="#features" class="nav-hide">Features</a>
+          <a href="#pricing" class="nav-hide">Pricing</a>
+          <a href="#faq" class="nav-hide">FAQ</a>
+          <a href="#" id="nav-signin" class="nav-hide">Sign in</a>
+          <a href="#pricing" class="btn btn-primary">Add to browser</a>
+        </div>
+      </div>
+    </nav>
+
+    <header class="hero">
+      <div class="wrap hero-grid">
+        <div>
+          <span class="eyebrow">YouTube focus mode</span>
+          <h1>
+            Study on YouTube. <span class="accent">Without YouTube.</span>
+          </h1>
+          <p class="sub">
+            Possiber turns any playlist into a clean, distraction-free study
+            queue. No recommendations, no comments, no autoplay rabbit holes —
+            just the videos you chose to learn from.
+          </p>
+          <div class="store-buttons">
+            <!-- TODO: replace href="#" with your Chrome Web Store listing URL -->
+            <a
+              href="#"
+              class="store-btn"
+              aria-label="Download Possiber for Chrome"
+            >
+              <svg viewBox="0 0 48 48" aria-hidden="true">
+                <path
+                  fill="#4caf50"
+                  d="M44 24c0 11.045-8.955 20-20 20S4 35.045 4 24 12.955 4 24 4s20 8.955 20 20z"
+                />
+                <path
+                  fill="#ffc107"
+                  d="M24 4v16l8 4-8.843 20C34.62 43.517 44 34.847 44 24 44 12.955 35.045 4 24 4z"
+                />
+                <path
+                  fill="#f44336"
+                  d="M41.84 15H24v9l-4-1L7.16 13.26h-.02C10.68 7.69 16.91 4 24 4c7.8 0 14.55 4.48 17.84 11z"
+                />
+                <path fill="#dd2c00" d="M7.158 13.264l8.843 20L24 24z" />
+                <path fill="#558b2f" d="M23.157 44l8.843-20L24 24z" />
+                <path fill="#f9a825" d="M41.865 15L24 24l8 4z" />
+                <circle cx="24" cy="24" r="7" fill="#fff" />
+                <circle cx="24" cy="24" r="5" fill="#2196f3" />
+              </svg>
+              <span class="store-txt"
+                ><span class="store-small">Download for</span
+                ><span class="store-big">Chrome</span></span
+              >
+            </a>
+
+            <!-- TODO: replace href="#" with your Edge Add-ons listing URL -->
+            <a
+              href="#"
+              class="store-btn"
+              aria-label="Download Possiber for Edge"
+            >
+              <svg viewBox="0 0 32 32" aria-hidden="true">
+                <defs>
+                  <radialGradient id="edge" cx="30%" cy="80%" r="100%">
+                    <stop offset="0" stop-color="#0C5AA6" />
+                    <stop offset=".5" stop-color="#1A8BD0" />
+                    <stop offset="1" stop-color="#36C6F0" />
+                  </radialGradient>
+                </defs>
+                <path
+                  fill="url(#edge)"
+                  d="M16 1c8.3 0 15 6.7 15 15 0 .3 0 .7-.1 1C29.4 12.5 25 9.5 20 9.5c-6 0-10.9 4.5-10.9 10 0 3.9 2.6 7.2 6.3 8.6C8 27.3 2 22.3 2 16 2 7.7 8.7 1 16 1z"
+                />
+              </svg>
+              <span class="store-txt"
+                ><span class="store-small">Download for</span
+                ><span class="store-big">Edge</span></span
+              >
+            </a>
+          </div>
+          <p class="hero-note">
+            Free forever for 2 playlists. Available for Chrome &amp; Edge.
+          </p>
+        </div>
+
+        <div class="device" aria-hidden="true">
+          <div class="device-bar">
+            <span class="dot"></span><span class="dot"></span
+            ><span class="dot"></span>
+            <span class="device-title">focus-session.study</span>
+            <span class="timer"><span class="pulse"></span>24:51</span>
+          </div>
+          <div class="divider-label">Your study queue</div>
+          <div class="queue-item active">
+            <span class="n">01</span>
+            <span class="thumb"></span>
+            <span class="meta"
+              ><span class="t">Linear Algebra — Vectors</span
+              ><span class="d">now playing</span></span
+            >
+          </div>
+          <div class="queue-item">
+            <span class="n">02</span>
+            <span class="thumb"></span>
+            <span class="meta"
+              ><span class="t">Eigenvalues, intuitively</span
+              ><span class="d">18:20</span></span
+            >
+          </div>
+          <div class="queue-item">
+            <span class="n">03</span>
+            <span class="thumb"></span>
+            <span class="meta"
+              ><span class="t">Matrix transformations</span
+              ><span class="d">22:04</span></span
+            >
+          </div>
+          <div class="divider-label">Hidden by Possiber</div>
+          <div class="noise">
+            <span class="x">✕</span> Recommended: 10 hours of lofi…
+          </div>
+          <div class="noise"><span class="x">✕</span> Comments (3,412)</div>
+          <div class="noise"><span class="x">✕</span> Shorts feed</div>
+        </div>
+      </div>
+    </header>
+    <section class="showcase" id="features">
+      <div class="wrap">
+        <div class="section-head">
+          <span class="eyebrow">Features</span>
+          <h2>Built for finishing what you started.</h2>
+          <p>
+            Every feature does one thing: keep your attention on the lesson in
+            front of you. Here's what that looks like.
+          </p>
+        </div>
+
+        <!-- 01 — New tab -->
+        <div class="show-row">
+          <div class="show-media">
+            <div class="frame" aria-hidden="true">
+              <div class="frame-bar">
+                <span class="dot"></span><span class="dot"></span><span class="dot"></span>
+                <span class="frame-url">New Tab</span>
+              </div>
+              <div class="frame-body">
+                <div class="mock-newtab-title">Ready to focus?</div>
+                <div class="mock-newtab-sub">Wednesday · 3 lessons left today</div>
+                <div class="mock-label">Continue studying</div>
+                <div class="mock-row">
+                  <span class="mock-thumb"></span>
+                  <span style="flex:1"><span class="mock-line" style="width:70%"></span></span>
+                  <span class="btn btn-primary" style="pointer-events:none">Resume</span>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="show-copy">
+            <span class="show-num">01</span>
+            <h3>Your study queue, every new tab</h3>
+            <p>
+              Open a new tab and Possiber greets you with what's next — not a
+              feed. One glance shows what you're studying and how much is left.
+            </p>
+            <div class="tags"><span class="tag-chip">New-tab page</span></div>
+          </div>
+        </div>
+
+        <!-- 02 — One-click focus -->
+        <div class="show-row flip">
+          <div class="show-media">
+            <div class="frame" aria-hidden="true">
+              <div class="frame-bar">
+                <span class="dot"></span><span class="dot"></span><span class="dot"></span>
+                <span class="frame-url">youtube.com/watch</span>
+              </div>
+              <div class="frame-body">
+                <div class="mock-toggle">
+                  <span style="font-family:var(--font-head);font-weight:600;color:var(--text)">Focus mode</span>
+                  <span class="switch"></span>
+                </div>
+                <div class="mock-row"><span class="mock-thumb"></span><span class="mock-line" style="width:55%"></span></div>
+                <div class="mock-row mock-strike"><span class="mock-thumb"></span><span class="mock-line" style="width:65%"></span></div>
+              </div>
+            </div>
+          </div>
+          <div class="show-copy">
+            <span class="show-num">02</span>
+            <h3>One click to lock in</h3>
+            <p>
+              Flip a single switch and the noise is gone. No settings maze — focus
+              is on or off, and you decide the instant you need it.
+            </p>
+            <div class="tags"><span class="tag-chip">One-click focus</span></div>
+          </div>
+        </div>
+
+        <!-- 03 — Progress + checkmarks -->
+        <div class="show-row">
+          <div class="show-media">
+            <div class="frame" aria-hidden="true">
+              <div class="frame-bar">
+                <span class="dot"></span><span class="dot"></span><span class="dot"></span>
+                <span class="frame-url">Calculus · Playlist</span>
+              </div>
+              <div class="frame-body">
+                <div class="mock-label">5 of 8 complete</div>
+                <div class="mock-progress"><span></span></div>
+                <div class="mock-row"><span class="mock-check done">✓</span><span class="mock-line" style="width:60%"></span></div>
+                <div class="mock-row"><span class="mock-check done">✓</span><span class="mock-line" style="width:52%"></span></div>
+                <div class="mock-row"><span class="mock-check">&nbsp;</span><span class="mock-line" style="width:68%"></span></div>
+              </div>
+            </div>
+          </div>
+          <div class="show-copy">
+            <span class="show-num">03</span>
+            <h3>See progress, tick off lessons</h3>
+            <p>
+              A progress line tracks the whole playlist, and each lesson gets a
+              checkmark when you finish it. Momentum you can actually see.
+            </p>
+            <div class="tags">
+              <span class="tag-chip">Progress line</span>
+              <span class="tag-chip">Lesson checkmarks</span>
+            </div>
+          </div>
+        </div>
+        <!-- 04 — Resume where you left off -->
+        <div class="show-row flip">
+          <div class="show-media">
+            <div class="frame" aria-hidden="true">
+              <div class="frame-bar">
+                <span class="dot"></span><span class="dot"></span><span class="dot"></span>
+                <span class="frame-url">Possiber · Linear Algebra</span>
+              </div>
+              <div class="frame-body">
+                <div class="mock-label">Resuming from lesson 5</div>
+                <div class="mock-row">
+                  <span class="mock-check done">✓</span>
+                  <span style="flex:1"><span class="mock-line" style="width:60%"></span></span>
+                </div>
+                <div class="mock-row">
+                  <span class="mock-check done">✓</span>
+                  <span style="flex:1"><span class="mock-line" style="width:50%"></span></span>
+                </div>
+                <div class="mock-row" style="background:var(--teal-subtle);border:1px solid var(--teal);padding:8px 10px;margin-top:4px">
+                  <span class="mock-check" style="border-color:var(--teal);color:var(--teal)">▶</span>
+                  <span style="flex:1;font-family:var(--font-mono);font-size:12px;color:var(--teal)">Eigenvalues, intuitively</span>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="show-copy">
+            <span class="show-num">04</span>
+            <h3>Pick up exactly where you stopped</h3>
+            <p>
+              Close the tab, come back tomorrow — Possiber remembers your place.
+              No hunting through a playlist to find where you were.
+            </p>
+            <div class="tags"><span class="tag-chip">Resume from last position</span></div>
+          </div>
+        </div>
+
+        <!-- 05 — Pomodoro + Coins -->
+        <div class="show-row">
+          <div class="show-media">
+            <div class="frame" aria-hidden="true">
+              <div class="frame-bar">
+                <span class="dot"></span><span class="dot"></span><span class="dot"></span>
+                <span class="frame-url">Focus session · 25 min</span>
+              </div>
+              <div class="frame-body" style="text-align:center;padding:28px 20px">
+                <div class="mock-timer-big">18:43</div>
+                <div class="mock-timer-label">Focus · Round 2 of 4</div>
+                <div style="margin-top:16px;padding:8px 14px;background:var(--teal-subtle);border:1px solid var(--teal);font-family:var(--font-mono);font-size:13px;color:var(--teal);display:inline-block">
+                  +30 coins earned
+                </div>
+                <div style="display:flex;gap:10px;justify-content:center;margin-top:16px">
+                  <span class="btn btn-ghost" style="pointer-events:none;font-size:13px">Pause</span>
+                  <span class="btn btn-primary" style="pointer-events:none;font-size:13px">Skip break</span>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="show-copy">
+            <span class="show-num">05</span>
+            <h3>Built-in Pomodoro + coin rewards</h3>
+            <p>
+              Work in focused rounds with timed breaks. The timer runs alongside
+              your video — no separate app, no switching tabs. Complete a session
+              and earn coins. The longer you focus, the more you earn.
+            </p>
+            <div class="tags">
+              <span class="tag-chip">Pomodoro</span>
+              <span class="tag-chip">Coin rewards</span>
+              <span class="tag-chip">Deep Work</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- 06 — No distractions -->
+        <div class="show-row flip">
+          <div class="show-media">
+            <div class="frame" aria-hidden="true">
+              <div class="frame-bar">
+                <span class="dot"></span><span class="dot"></span><span class="dot"></span>
+                <span class="frame-url">youtube.com/watch · Focus ON</span>
+              </div>
+              <div class="frame-body">
+                <div class="mock-label">Removed by Possiber</div>
+                <div class="mock-row mock-strike"><span style="font-size:12px;width:80px;flex-shrink:0">Sidebar</span><span class="mock-line" style="width:55%"></span></div>
+                <div class="mock-row mock-strike"><span style="font-size:12px;width:80px;flex-shrink:0">Comments</span><span class="mock-line" style="width:65%"></span></div>
+                <div class="mock-row mock-strike"><span style="font-size:12px;width:80px;flex-shrink:0">Recommended</span><span class="mock-line" style="width:50%"></span></div>
+                <div style="margin-top:14px;padding:10px 12px;background:var(--teal-subtle);border:1px solid var(--teal);font-family:var(--font-mono);font-size:11px;color:var(--teal)">
+                  ✓ Only your video remains
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="show-copy">
+            <span class="show-num">06</span>
+            <h3>No sidebar. No comments. No rabbit holes.</h3>
+            <p>
+              The three biggest attention traps on YouTube — the recommendation
+              sidebar, the comments section, and the "Up next" feed — are gone.
+              What's left is your video.
+            </p>
+            <div class="tags">
+              <span class="tag-chip">No sidebar</span>
+              <span class="tag-chip">No comments</span>
+              <span class="tag-chip">No recommendations</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- 07 — Coins & Gamification -->
+        <div class="show-row">
+          <div class="show-media">
+            <div class="frame" aria-hidden="true">
+              <div class="frame-bar">
+                <span class="dot"></span><span class="dot"></span><span class="dot"></span>
+                <span class="frame-url">Session complete</span>
+              </div>
+              <div class="frame-body" style="text-align:center;padding:28px 20px">
+                <div style="font-size:13px;color:var(--text-faint);margin-bottom:4px">Session complete!</div>
+                <div style="font-family:var(--font-mono);font-size:28px;font-weight:700;color:var(--teal);margin-bottom:16px">+70 coins</div>
+                <div style="display:flex;gap:10px;justify-content:center">
+                  <span class="btn btn-primary" style="pointer-events:none;font-size:13px">Continue</span>
+                  <span class="btn btn-ghost" style="pointer-events:none;font-size:13px">End session</span>
+                </div>
+                <div style="margin-top:18px;padding:10px 12px;background:var(--bg-raised);border:1px solid var(--border);font-family:var(--font-mono);font-size:11px;color:var(--text-faint)">
+                  Balance: 340 coins · 3 sessions today
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="show-copy">
+            <span class="show-num">07</span>
+            <h3>Earn coins for every session</h3>
+            <p>
+              Complete a focus session and earn coins — the longer you focus, the
+              more you earn. Stop early and you lose some. It's a simple loop
+              that keeps you coming back.
+            </p>
+            <div class="tags">
+              <span class="tag-chip">Coin rewards</span>
+              <span class="tag-chip">Session tracking</span>
+              <span class="tag-chip">Gamification</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- 08 — Dashboard -->
+        <div class="show-row flip">
+          <div class="show-media">
+            <div class="frame" aria-hidden="true">
+              <div class="frame-bar">
+                <span class="dot"></span><span class="dot"></span><span class="dot"></span>
+                <span class="frame-url">Possiber — Dashboard</span>
+              </div>
+              <div class="frame-body">
+                <div class="mock-label">Your playlists</div>
+                <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:8px">
+                  <div style="background:var(--bg-raised);border:1px solid var(--border);padding:12px">
+                    <div class="mock-thumb" style="width:100%;height:40px;margin-bottom:8px"></div>
+                    <div class="mock-line" style="width:70%;height:7px"></div>
+                    <div style="font-family:var(--font-mono);font-size:10px;color:var(--text-faint);margin-top:4px">5 / 12 · 42%</div>
+                  </div>
+                  <div style="background:var(--bg-raised);border:1px solid var(--border);padding:12px">
+                    <div class="mock-thumb" style="width:100%;height:40px;margin-bottom:8px"></div>
+                    <div class="mock-line" style="width:45%;height:7px"></div>
+                    <div style="font-family:var(--font-mono);font-size:10px;color:var(--text-faint);margin-top:4px">3 / 8 · 38%</div>
+                  </div>
+                </div>
+                <div style="margin-top:12px;padding:8px 12px;border:1px solid var(--border);font-family:var(--font-mono);font-size:11px;color:var(--text-faint)">
+                  🔍 Search across all videos...
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="show-copy">
+            <span class="show-num">08</span>
+            <h3>Your command center: the Dashboard</h3>
+            <p>
+              See every playlist at a glance. Search across all your videos,
+              toggle progress dots, hide watched lessons, and sync with one
+              click. It's everything you need in a single view.
+            </p>
+            <div class="tags">
+              <span class="tag-chip">Grid / List view</span>
+              <span class="tag-chip">Global search</span>
+              <span class="tag-chip">Progress dots</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- 09 — Themes -->
+        <div class="show-row">
+          <div class="show-media">
+            <div class="frame" aria-hidden="true">
+              <div class="frame-bar">
+                <span class="dot"></span><span class="dot"></span><span class="dot"></span>
+                <span class="frame-url">Settings · Themes</span>
+              </div>
+              <div class="frame-body" style="padding:20px">
+                <div class="mock-label">Choose your theme</div>
+                <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:10px">
+                  <div style="padding:14px;border:2px solid var(--teal);background:var(--teal-subtle)">
+                    <div style="display:flex;gap:6px;margin-bottom:8px">
+                      <span style="width:16px;height:16px;background:#17171b;border:1px solid var(--border)"></span>
+                      <span style="width:16px;height:16px;background:#d1c400;border:1px solid var(--border)"></span>
+                      <span style="width:16px;height:16px;background:#e2e2e6;border:1px solid var(--border)"></span>
+                    </div>
+                    <div style="font-family:var(--font-mono);font-size:11px;color:var(--teal)">Dark</div>
+                  </div>
+                  <div style="padding:14px;border:1px solid var(--border)">
+                    <div style="display:flex;gap:6px;margin-bottom:8px">
+                      <span style="width:16px;height:16px;background:#F5F5F7;border:1px solid var(--border)"></span>
+                      <span style="width:16px;height:16px;background:#E8B800;border:1px solid var(--border)"></span>
+                      <span style="width:16px;height:16px;background:#111114;border:1px solid var(--border)"></span>
+                    </div>
+                    <div style="font-family:var(--font-mono);font-size:11px;color:var(--text-faint)">Light</div>
+                  </div>
+                  <div style="padding:14px;border:1px solid var(--border)">
+                    <div style="display:flex;gap:6px;margin-bottom:8px">
+                      <span style="width:16px;height:16px;background:#F2EEE4;border:1px solid var(--border)"></span>
+                      <span style="width:16px;height:16px;background:#C79A22;border:1px solid var(--border)"></span>
+                      <span style="width:16px;height:16px;background:#2A2418;border:1px solid var(--border)"></span>
+                    </div>
+                    <div style="font-family:var(--font-mono);font-size:11px;color:var(--text-faint)">Paper · Pro</div>
+                  </div>
+                  <div style="padding:14px;border:1px solid var(--border)">
+                    <div style="display:flex;gap:6px;margin-bottom:8px">
+                      <span style="width:16px;height:16px;background:#131318;border:1px solid var(--border)"></span>
+                      <span style="width:16px;height:16px;background:#fde400;border:1px solid var(--border)"></span>
+                      <span style="width:16px;height:16px;background:#27ff97;border:1px solid var(--border)"></span>
+                    </div>
+                    <div style="font-family:var(--font-mono);font-size:11px;color:var(--text-faint)">Midnight · Pro</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="show-copy">
+            <span class="show-num">09</span>
+            <h3>Themes that match your vibe</h3>
+            <p>
+              Dark and Light are free. Paper and Midnight are Pro. Pick the one
+              that fits your study environment — or switch whenever you feel like
+              it.
+            </p>
+            <div class="tags">
+              <span class="tag-chip">4 themes</span>
+              <span class="tag-chip">Dark / Light / Paper / Midnight</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- 10 — Exit Challenges -->
+        <div class="show-row flip">
+          <div class="show-media">
+            <div class="frame" aria-hidden="true">
+              <div class="frame-bar">
+                <span class="dot"></span><span class="dot"></span><span class="dot"></span>
+                <span class="frame-url">End session?</span>
+              </div>
+              <div class="frame-body" style="padding:28px 24px">
+                <div style="font-family:var(--font-head);font-weight:600;font-size:16px;margin-bottom:6px">End session?</div>
+                <div style="font-size:13px;color:var(--text-muted);margin-bottom:16px">Type your focus phrase:</div>
+                <div style="padding:10px 14px;border:1px solid var(--border);background:var(--bg);font-family:var(--font-mono);font-size:13px;color:var(--text-faint);margin-bottom:16px">
+                  "I choose to focus."
+                </div>
+                <div style="display:flex;gap:10px;justify-content:flex-end">
+                  <span class="btn btn-ghost" style="pointer-events:none;font-size:13px">Cancel</span>
+                  <span class="btn btn-primary" style="pointer-events:none;font-size:13px">Submit</span>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="show-copy">
+            <span class="show-num">10</span>
+            <h3>Exit challenges that keep you honest</h3>
+            <p>
+              Trying to leave a focus session? Type your custom focus phrase or
+              solve a quick math problem. It's a small friction that stops you
+              from quitting too early.
+            </p>
+            <div class="tags">
+              <span class="tag-chip">Focus phrase</span>
+              <span class="tag-chip">Math challenge</span>
+              <span class="tag-chip">Customizable</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- 11 — Whitelist domains -->
+        <div class="show-row">
+          <div class="show-media">
+            <div class="frame" aria-hidden="true">
+              <div class="frame-bar">
+                <span class="dot"></span><span class="dot"></span><span class="dot"></span>
+                <span class="frame-url">Settings · Whitelist</span>
+              </div>
+              <div class="frame-body" style="padding:20px">
+                <div class="mock-label">Allowed during focus</div>
+                <div class="mock-row" style="margin-top:8px">
+                  <span style="font-size:12px;color:var(--teal);width:14px">✓</span>
+                  <span style="font-size:13px;flex:1">youtube.com</span>
+                  <span style="font-family:var(--font-mono);font-size:10px;color:var(--text-faint)">always</span>
+                </div>
+                <div class="mock-row">
+                  <span style="font-size:12px;color:var(--teal);width:14px">✓</span>
+                  <span style="font-size:13px;flex:1">open.spotify.com</span>
+                  <span style="font-family:var(--font-mono);font-size:10px;color:var(--text-faint)">added</span>
+                </div>
+                <div class="mock-row">
+                  <span style="font-size:12px;color:var(--teal);width:14px">✓</span>
+                  <span style="font-size:13px;flex:1">notion.so</span>
+                  <span style="font-family:var(--font-mono);font-size:10px;color:var(--text-faint)">added</span>
+                </div>
+                <div style="margin-top:12px;padding:8px 12px;border:1px dashed var(--border);font-family:var(--font-mono);font-size:11px;color:var(--text-faint)">
+                  + Add domain
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="show-copy">
+            <span class="show-num">11</span>
+            <h3>Whitelist the sites you need</h3>
+            <p>
+              Need Spotify for study music or Notion for notes? Add any domain
+              to the whitelist and Possiber will allow it during focus sessions.
+              YouTube is always allowed.
+            </p>
+            <div class="tags">
+              <span class="tag-chip">Whitelist</span>
+              <span class="tag-chip">Custom domains</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- 12 — Navigation guard -->
+        <div class="show-row flip">
+          <div class="show-media">
+            <div class="frame" aria-hidden="true">
+              <div class="frame-bar">
+                <span class="dot"></span><span class="dot"></span><span class="dot"></span>
+                <span class="frame-url">Focus · Navigation blocked</span>
+              </div>
+              <div class="frame-body" style="padding:28px 20px;text-align:center">
+                <div style="font-size:32px;margin-bottom:8px">🛡️</div>
+                <div style="font-family:var(--font-head);font-weight:600;font-size:16px;margin-bottom:6px">Stay on track</div>
+                <div style="font-size:13px;color:var(--text-muted);margin-bottom:16px">Navigation to reddit.com is blocked during focus.</div>
+                <div style="padding:10px 14px;background:var(--teal-subtle);border:1px solid var(--teal);font-family:var(--font-mono);font-size:11px;color:var(--teal)">
+                  → Redirecting to your playlist
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="show-copy">
+            <span class="show-num">12</span>
+            <h3>Navigation guard blocks rabbit holes</h3>
+            <p>
+              Try to open Reddit, Twitter, or any non-whitelisted site during a
+              focus session? Possiber blocks the navigation and redirects you
+              back to your playlist. No willpower required.
+            </p>
+            <div class="tags">
+              <span class="tag-chip">Navigation guard</span>
+              <span class="tag-chip">Auto-redirect</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- 13 — Collections (Pro) -->
+        <div class="show-row">
+          <div class="show-media">
+            <div class="frame" aria-hidden="true">
+              <div class="frame-bar">
+                <span class="dot"></span><span class="dot"></span><span class="dot"></span>
+                <span class="frame-url">Dashboard · Collections</span>
+              </div>
+              <div class="frame-body">
+                <div class="mock-label">Your collections</div>
+                <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:8px">
+                  <div style="background:var(--bg-raised);border:1px solid var(--border);padding:12px">
+                    <div style="font-family:var(--font-mono);font-size:11px;color:var(--teal);margin-bottom:6px">Physics</div>
+                    <div class="mock-line" style="width:60%;height:6px;margin-bottom:4px"></div>
+                    <div style="font-family:var(--font-mono);font-size:10px;color:var(--text-faint)">3 playlists</div>
+                  </div>
+                  <div style="background:var(--bg-raised);border:1px solid var(--border);padding:12px">
+                    <div style="font-family:var(--font-mono);font-size:11px;color:var(--teal);margin-bottom:6px">Chemistry</div>
+                    <div class="mock-line" style="width:45%;height:6px;margin-bottom:4px"></div>
+                    <div style="font-family:var(--font-mono);font-size:10px;color:var(--text-faint)">2 playlists</div>
+                  </div>
+                </div>
+                <div style="margin-top:10px;padding:8px 12px;border:1px dashed var(--border);font-family:var(--font-mono);font-size:11px;color:var(--text-faint)">
+                  + New collection
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="show-copy">
+            <span class="show-num">13</span>
+            <h3>Collections keep things tidy</h3>
+            <p>
+              Organize playlists into folders — Physics, Chemistry, Side projects.
+              When your library grows, collections keep everything easy to find.
+              Pro feature.
+            </p>
+            <div class="tags">
+              <span class="tag-chip">Collections</span>
+              <span class="tag-chip">Folder organization</span>
+              <span class="tag-chip">Pro</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- 14 — To-Do widget (Pro) -->
+        <div class="show-row flip">
+          <div class="show-media">
+            <div class="frame" aria-hidden="true">
+              <div class="frame-bar">
+                <span class="dot"></span><span class="dot"></span><span class="dot"></span>
+                <span class="frame-url">Dashboard · To-Do</span>
+              </div>
+              <div class="frame-body" style="padding:20px">
+                <div class="mock-label">Study tasks</div>
+                <div class="mock-row" style="margin-top:8px">
+                  <span class="mock-check done">✓</span>
+                  <span style="font-size:13px;flex:1;text-decoration:line-through;opacity:.5">Review chapter 3 notes</span>
+                </div>
+                <div class="mock-row">
+                  <span class="mock-check"></span>
+                  <span style="font-size:13px;flex:1">Complete practice problems</span>
+                </div>
+                <div class="mock-row">
+                  <span class="mock-check"></span>
+                  <span style="font-size:13px;flex:1">Watch eigenvalues lecture</span>
+                </div>
+                <div style="margin-top:10px;padding:8px 12px;border:1px dashed var(--border);font-family:var(--font-mono);font-size:11px;color:var(--text-faint)">
+                  + Add task · Link to video
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="show-copy">
+            <span class="show-num">14</span>
+            <h3>To-Do list tied to your videos</h3>
+            <p>
+              Create study tasks and link them to specific videos in your
+              playlists. Check them off as you go. Your to-dos stay in sync
+              across devices. Pro feature.
+            </p>
+            <div class="tags">
+              <span class="tag-chip">To-Do list</span>
+              <span class="tag-chip">Video-linked tasks</span>
+              <span class="tag-chip">Pro</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- 15 — Auto-mark complete -->
+        <div class="show-row">
+          <div class="show-media">
+            <div class="frame" aria-hidden="true">
+              <div class="frame-bar">
+                <span class="dot"></span><span class="dot"></span><span class="dot"></span>
+                <span class="frame-url">youtube.com/watch · Auto-complete</span>
+              </div>
+              <div class="frame-body" style="padding:20px">
+                <div class="mock-label">Video progress</div>
+                <div class="mock-progress" style="margin-top:8px"><span style="width:92%"></span></div>
+                <div style="display:flex;justify-content:space-between;font-family:var(--font-mono);font-size:11px;color:var(--text-faint);margin-bottom:12px">
+                  <span>16:48 / 18:20</span>
+                  <span>92%</span>
+                </div>
+                <div style="padding:10px 12px;background:var(--teal-subtle);border:1px solid var(--teal);font-family:var(--font-mono);font-size:11px;color:var(--teal)">
+                  ✓ Auto-marked complete at 90%
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="show-copy">
+            <span class="show-num">15</span>
+            <h3>Auto-mark complete — hands-free</h3>
+            <p>
+              Watch a video past 90% and Possiber marks it done automatically.
+              No checkboxes, no manual tracking. Just watch and learn.
+            </p>
+            <div class="tags">
+              <span class="tag-chip">Auto-complete</span>
+              <span class="tag-chip">Hands-free tracking</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- 16 — Export / Import -->
+        <div class="show-row flip">
+          <div class="show-media">
+            <div class="frame" aria-hidden="true">
+              <div class="frame-bar">
+                <span class="dot"></span><span class="dot"></span><span class="dot"></span>
+                <span class="frame-url">Dashboard · Backup</span>
+              </div>
+              <div class="frame-body" style="padding:24px 20px">
+                <div class="mock-label">Data backup</div>
+                <div style="display:flex;gap:10px;margin-top:10px">
+                  <div style="flex:1;padding:14px;border:1px solid var(--teal);background:var(--teal-subtle);text-align:center">
+                    <div style="font-size:20px;margin-bottom:4px">📦</div>
+                    <div style="font-family:var(--font-mono);font-size:11px;color:var(--teal)">Export JSON</div>
+                  </div>
+                  <div style="flex:1;padding:14px;border:1px solid var(--border);text-align:center">
+                    <div style="font-size:20px;margin-bottom:4px">📥</div>
+                    <div style="font-family:var(--font-mono);font-size:11px;color:var(--text-faint)">Import JSON</div>
+                  </div>
+                </div>
+                <div style="margin-top:12px;padding:8px 12px;border:1px solid var(--border);font-family:var(--font-mono);font-size:10px;color:var(--text-faint)">
+                  possiber-backup-2026-09-01.json (2.4 KB)
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="show-copy">
+            <span class="show-num">16</span>
+            <h3>Export and import your data</h3>
+            <p>
+              Download all your playlists, progress, and settings as a JSON
+              file. Restore it anytime. Move between browsers or keep a backup
+              — your data is never locked in.
+            </p>
+            <div class="tags">
+              <span class="tag-chip">Export JSON</span>
+              <span class="tag-chip">Import JSON</span>
+              <span class="tag-chip">Data portability</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- 17 — Coin shop -->
+        <div class="show-row">
+          <div class="show-media">
+            <div class="frame" aria-hidden="true">
+              <div class="frame-bar">
+                <span class="dot"></span><span class="dot"></span><span class="dot"></span>
+                <span class="frame-url">Dashboard · Coin Shop</span>
+              </div>
+              <div class="frame-body" style="padding:20px">
+                <div class="mock-label">Spend your coins</div>
+                <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:8px">
+                  <div style="padding:12px;border:1px solid var(--border);background:var(--bg-raised)">
+                    <div style="display:flex;gap:4px;margin-bottom:6px">
+                      <span style="width:12px;height:12px;background:#131318;border:1px solid var(--border)"></span>
+                      <span style="width:12px;height:12px;background:#fde400;border:1px solid var(--border)"></span>
+                      <span style="width:12px;height:12px;background:#27ff97;border:1px solid var(--border)"></span>
+                    </div>
+                    <div style="font-size:12px;margin-bottom:4px">Midnight theme</div>
+                    <div style="font-family:var(--font-mono);font-size:10px;color:var(--teal)">500 coins</div>
+                  </div>
+                  <div style="padding:12px;border:1px solid var(--border);background:var(--bg-raised);opacity:.5">
+                    <div style="display:flex;gap:4px;margin-bottom:6px">
+                      <span style="width:12px;height:12px;background:#ff6b6b;border:1px solid var(--border)"></span>
+                      <span style="width:12px;height:12px;background:#ffd93d;border:1px solid var(--border)"></span>
+                      <span style="width:12px;height:12px;background:#6bcb77;border:1px solid var(--border)"></span>
+                    </div>
+                    <div style="font-size:12px;margin-bottom:4px">Sunset theme</div>
+                    <div style="font-family:var(--font-mono);font-size:10px;color:var(--text-faint)">800 coins</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="show-copy">
+            <span class="show-num">17</span>
+            <h3>Spend coins in the shop</h3>
+            <p>
+              Earned enough coins? Spend them on cosmetic themes and items in
+              the Coin Shop. The more you study, the more you unlock.
+            </p>
+            <div class="tags">
+              <span class="tag-chip">Coin shop</span>
+              <span class="tag-chip">Cosmetic themes</span>
+              <span class="tag-chip">Rewards</span>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <section class="pricing" id="pricing">
+      <div class="wrap">
+        <div class="section-head">
+          <span class="eyebrow">Pricing</span>
+          <h2>Start free. Upgrade when you outgrow it.</h2>
+          <p>
+            No trials, no credit card to begin. Pay monthly, save with yearly, or
+            own it for life.
+          </p>
+        </div>
+
+        <div class="billing-toggle" role="group" aria-label="Billing period">
+          <span class="seg seg-monthly active">Monthly</span>
+          <button
+            class="bt-switch"
+            id="billingSwitch"
+            role="switch"
+            aria-checked="false"
+            aria-label="Toggle yearly billing"
+          ></button>
+          <span class="seg seg-yearly">Yearly</span>
+          <span class="bt-save">Save 30%</span>
+        </div>
+
+        <div class="price-grid">
+          <!-- PLAN 01 — Free -->
+          <div class="plan">
+            <div class="plan-head">
+              <span class="tag">Free</span>
+              <span class="plan-no">PLAN.01</span>
+            </div>
+            <div class="amount">$0</div>
+            <div class="yearly">Free forever</div>
+            <ul>
+              <li><span class="check">✓</span> Up to 2 study playlists</li>
+              <li><span class="check">✓</span> Full distraction-free player</li>
+              <li><span class="check">✓</span> Classic Pomodoro (25/5)</li>
+              <li><span class="check">✓</span> Coin rewards</li>
+              <li><span class="check">✓</span> Dark &amp; Light themes</li>
+              <li><span class="check">✓</span> Stored locally on your device</li>
+            </ul>
+            <!-- TODO: replace # with your Chrome Web Store listing URL once published -->
+            <a href="#" class="btn btn-ghost">Add to browser</a>
+          </div>
+
+          <!-- PLAN 02 — Pro (best value) -->
+          <div class="plan pro">
+            <span class="badge">Best value</span>
+            <div class="plan-head">
+              <span class="tag">Possiber Pro</span>
+              <span class="plan-no">PLAN.02</span>
+            </div>
+            <div class="price-monthly">
+              <div class="amount">$5<small> / month</small></div>
+              <div class="yearly">Billed monthly</div>
+            </div>
+            <div class="price-yearly">
+              <div class="amount">$3.50<small> / month</small></div>
+              <div class="yearly">
+                <span class="hl">$42 billed yearly</span> — save 30%
+              </div>
+            </div>
+            <ul>
+              <li><span class="check">✓</span> Unlimited playlists</li>
+              <li><span class="check">✓</span> Sync across all your devices</li>
+              <li><span class="check">✓</span> Custom Pomodoro (10-180 min)</li>
+              <li><span class="check">✓</span> Deep Work preset (50/10)</li>
+              <li><span class="check">✓</span> Collections &amp; To-Do widget</li>
+              <li><span class="check">✓</span> All 4 themes</li>
+              <li><span class="check">✓</span> Everything in Free</li>
+              <li><span class="check">✓</span> Priority support</li>
+            </ul>
+            <a id="cta-pro" href="checkout.html?plan=monthly" class="btn btn-primary">Get Pro</a>
+          </div>
+
+          <!-- PLAN 03 — Lifetime -->
+          <div class="plan">
+            <div class="plan-head">
+              <span class="tag">Lifetime</span>
+              <span class="plan-no">PLAN.03</span>
+            </div>
+            <div class="amount">$195<small> once</small></div>
+            <div class="yearly">One payment, yours forever</div>
+            <ul>
+              <li><span class="check">✓</span> Everything in Pro, forever</li>
+              <li><span class="check">✓</span> Lifetime updates included</li>
+              <li><span class="check">✓</span> No subscription, ever</li>
+              <li><span class="check">✓</span> Priority support</li>
+            </ul>
+            <a href="checkout.html?plan=lifetime" class="btn btn-ghost">Buy lifetime</a>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="faq" id="faq">
+      <div class="wrap faq-wrap">
+        <div class="section-head">
+          <span class="eyebrow">FAQ</span>
+          <h2>Questions, answered.</h2>
+        </div>
+        <details open>
+          <summary>What exactly does Possiber do?</summary>
+          <p>
+            It runs on top of YouTube in your browser and strips away everything
+            that isn't your study video — recommendations, comments, Shorts, and
+            autoplay suggestions. You build playlists of the videos you actually
+            want to learn from, and Possiber plays through them cleanly.
+          </p>
+        </details>
+        <details>
+          <summary>Which browsers are supported?</summary>
+          <p>
+            Chrome and Edge. It installs as a browser extension from each
+            browser's store.
+          </p>
+        </details>
+        <details>
+          <summary>What are the plans and what do they cost?</summary>
+          <p>
+            Free gives you up to 2 playlists stored locally on your device, with
+            the full distraction-free player and no account required. Possiber
+            Pro ($5/month, or $42/year which works out to $3.50/month) unlocks
+            unlimited playlists and syncs them across all your devices. If you'd
+            rather not subscribe, Lifetime is a single $195 payment that includes
+            Pro and all future updates, forever.
+          </p>
+        </details>
+        <details>
+          <summary>How does billing work?</summary>
+          <p>
+            Pro subscriptions are handled securely by Paddle, our payment
+            provider. You can pay monthly or yearly, and Paddle manages your
+            invoices and payment details — we never see your card information.
+          </p>
+        </details>
+        <details>
+          <summary>Do you collect my data or watch history?</summary>
+          <p>
+            No. Possiber never collects your browsing history or YouTube watch
+            history. On the free tier, your playlists live only on your device.
+            On Pro, we store your email (for login via Google) and your
+            subscription status — nothing more.
+          </p>
+        </details>
+        <details>
+          <summary>How do I cancel Pro?</summary>
+          <p>
+            You can cancel anytime from your account. Your subscription stays
+            active until the end of the billing period, then drops back to the
+            free tier — your playlists aren't deleted.
+          </p>
+        </details>
+        <details>
+          <summary>Does Possiber access my YouTube account?</summary>
+          <p>
+            No. Possiber only cleans up the pages you're already viewing and
+            plays embedded videos. It doesn't log into, post to, or read
+            anything from your YouTube account.
+          </p>
+        </details>
+        <details>
+          <summary>How do I get support?</summary>
+          <p>
+            Email us anytime at the address in the footer and we'll help you
+            out.
+          </p>
+        </details>
+        <details>
+          <summary>What are coins and how do I earn them?</summary>
+          <p>
+            Coins are rewards you earn by completing Pomodoro focus sessions.
+            The longer you focus, the more coins you get. For example, a 30-minute
+            session earns 30 coins, a 60-minute session earns 70 coins. If you
+            stop a session early, you lose some coins proportional to how far
+            you got.
+          </p>
+        </details>
+        <details>
+          <summary>What is the Dashboard?</summary>
+          <p>
+            The Dashboard is a full-screen view of all your playlists. You can
+            switch between grid and list view, search across every video in
+            every playlist, toggle progress dots, hide watched lessons, and
+            trigger a manual sync with YouTube.
+          </p>
+        </details>
+        <details>
+          <summary>What are Collections?</summary>
+          <p>
+            Collections let you organize playlists into folders — like "Physics",
+            "Chemistry", or "Side projects". They appear in the Dashboard and
+            help you keep things tidy when you have a lot of playlists. Pro
+            feature.
+          </p>
+        </details>
+        <details>
+          <summary>What themes are available?</summary>
+          <p>
+            Free gives you Dark and Light. Pro adds Paper (warm cream tones) and
+            Midnight (deep dark with neon accents). You can switch themes anytime
+            from Settings.
+          </p>
+        </details>
+      </div>
+    </section>
+
+    <footer>
+      <div class="wrap">
+        <div class="foot-grid">
+          <div class="foot-brand">
+            <a href="#" class="logo"
+              ><span class="logo-mark">P</span> Possiber</a
+            >
+            <p>
+              A distraction-free way to study on YouTube. Built for people who
+              came to learn, not to scroll.
+            </p>
+          </div>
+          <div class="foot-links">
+            <div class="foot-col">
+              <h4>Product</h4>
+              <a href="#features">Features</a>
+              <a href="#pricing">Pricing</a>
+              <a href="#faq">FAQ</a>
+            </div>
+            <div class="foot-col">
+              <h4>Legal</h4>
+              <a href="privacy.html">Privacy Policy</a>
+              <a href="terms.html">Terms of Service</a>
+            </div>
+            <div class="foot-col">
+              <h4>Contact</h4>
+              <a href="mailto:support@muzzish.com">support@muzzish.com</a>
+            </div>
+          </div>
+        </div>
+        <div class="foot-bottom">
+          <span>© 2026 Possiber</span>
+          <span class="made-by"
+            >Made by <a href="https://www.muzzish.com">Muzzish</a></span
+          >
+        </div>
+      </div>
+    </footer>
+
+    <script>
+      // Billing toggle: swaps monthly/yearly Pro pricing by toggling a class on <body>.
+      (function () {
+        var sw = document.getElementById("billingSwitch");
+        var segM = document.querySelector(".seg-monthly");
+        var segY = document.querySelector(".seg-yearly");
+        if (!sw) return;
+        var ctaPro = document.getElementById("cta-pro");
+        sw.addEventListener("click", function () {
+          var yearly = document.body.classList.toggle("yearly");
+          sw.setAttribute("aria-checked", yearly ? "true" : "false");
+          segM.classList.toggle("active", !yearly);
+          segY.classList.toggle("active", yearly);
+          // Point the Pro button at the matching plan on the checkout page.
+          if (ctaPro)
+            ctaPro.setAttribute(
+              "href",
+              yearly ? "checkout.html?plan=annual" : "checkout.html?plan=monthly",
+            );
+        });
+      })();
+    </script>
+    <script>
+      // Supabase Auth — enables "Get Pro" buttons to sign in and open checkout
+      (function () {
+        var SUPABASE_URL = "https://ksstiahpharqtqvvglsw.supabase.co";
+        var SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imtzc3RpYWhwaGFycXRxdnZnbHN3Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODQ1Mjg1ODIsImV4cCI6MjEwMDEwNDU4Mn0.QUuYhEjsbh1tghr3vLeYDNvMMT5NjkpiewzD2JZllR0";
+        var supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+        var CHECKOUT_URL = "checkout.html";
+
+        // Get current session
+        async function getSession() {
+          var result = await supabase.auth.getSession();
+          return result.data.session;
+        }
+
+        // Sign in with Google
+        async function signInWithGoogle() {
+          var result = await supabase.auth.signInWithOAuth({
+            provider: "google",
+            options: { redirectTo: window.location.origin + window.location.pathname },
+          });
+          if (result.error) console.error("Auth error:", result.error);
+        }
+
+        // Open checkout with user context
+        async function openCheckout(plan) {
+          var session = await getSession();
+          if (!session) {
+            // Not signed in — trigger Google OAuth
+            await signInWithGoogle();
+            return;
+          }
+          var uid = session.user.id;
+          var email = session.user.email || "";
+          var url = new URL(CHECKOUT_URL, window.location.origin);
+          url.searchParams.set("plan", plan);
+          url.searchParams.set("uid", uid);
+          url.searchParams.set("email", email);
+          window.open(url.toString(), "_blank");
+        }
+
+        // Wire up all "Get Pro" buttons and sign-in link
+        function wireButtons() {
+          var ctaPro = document.getElementById("cta-pro");
+          if (ctaPro) {
+            ctaPro.addEventListener("click", function (e) {
+              e.preventDefault();
+              var plan = ctaPro.getAttribute("href").includes("annual") ? "annual" : "monthly";
+              openCheckout(plan);
+            });
+          }
+          var ctaLifetime = document.querySelector('a[href="checkout.html?plan=lifetime"]');
+          if (ctaLifetime) {
+            ctaLifetime.addEventListener("click", function (e) {
+              e.preventDefault();
+              openCheckout("lifetime");
+            });
+          }
+          var navSignin = document.getElementById("nav-signin");
+          if (navSignin) {
+            navSignin.addEventListener("click", function (e) {
+              e.preventDefault();
+              signInWithGoogle();
+            });
+          }
+        }
+
+        // Handle OAuth callback (user just signed in)
+        async function handleCallback() {
+          var hash = window.location.hash;
+          if (hash && hash.includes("access_token")) {
+            // Supabase Auth stores session from URL hash automatically
+            // Clean up the URL
+            window.history.replaceState(null, "", window.location.pathname);
+          }
+        }
+
+        // Init
+        handleCallback().then(wireButtons);
+      })();
+    </script>
+  </body>
+</html>
