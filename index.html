@@ -1,13 +1,75 @@
 <!doctype html>
-<html lang="en">
+<html lang="en" data-page="index">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Possiber — YouTube Focus Mode for Serious Learners</title>
+    <title>Possiber: YouTube Focus Mode for Serious Learners</title>
     <meta
       name="description"
       content="Turn your YouTube playlists into a distraction-free study environment. No recommendations. No comments. Just your queue."
     />
+    <link rel="canonical" href="https://possiber.muzzish.com" />
+    <!-- Open Graph -->
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content="Possiber: YouTube Focus Mode for Serious Learners" />
+    <meta property="og:description" content="Turn any playlist into a clean study space. No recommendations, no comments, no autoplay." />
+    <meta property="og:url" content="https://possiber.muzzish.com" />
+    <meta property="og:site_name" content="Possiber" />
+    <!-- Twitter Card -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Possiber: YouTube Focus Mode for Serious Learners" />
+    <meta name="twitter:description" content="Turn any playlist into a clean study space. No recommendations, no comments, no autoplay." />
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "WebSite",
+      "name": "Possiber",
+      "url": "https://possiber.muzzish.com",
+      "description": "Turn any playlist into a clean study space. No recommendations, no comments, no autoplay.",
+      "publisher": {
+        "@type": "Organization",
+        "name": "Muzzish",
+        "url": "https://www.muzzish.com"
+      }
+    }
+    </script>
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "SoftwareApplication",
+      "name": "Possiber",
+      "applicationCategory": "BrowserApplication",
+      "operatingSystem": "Chrome, Edge",
+      "description": "YouTube focus mode for serious learners. Turn any playlist into a distraction-free study environment.",
+      "url": "https://possiber.muzzish.com",
+      "offers": [
+        {
+          "@type": "Offer",
+          "price": "0",
+          "priceCurrency": "USD",
+          "name": "Free"
+        },
+        {
+          "@type": "Offer",
+          "price": "5",
+          "priceCurrency": "USD",
+          "name": "Pro (monthly)"
+        },
+        {
+          "@type": "Offer",
+          "price": "42",
+          "priceCurrency": "USD",
+          "name": "Pro (yearly)"
+        },
+        {
+          "@type": "Offer",
+          "price": "195",
+          "priceCurrency": "USD",
+          "name": "Lifetime"
+        }
+      ]
+    }
+    </script>
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
@@ -19,7 +81,7 @@
     <style>
       /* HERO */
       .hero {
-        padding: clamp(56px, 10vw, 110px) 0 var(--space-xl);
+        padding: clamp(48px, 8vw, 88px) 0 var(--space-xl);
       }
       .hero-grid {
         display: grid;
@@ -418,12 +480,13 @@
         width: 100%;
         text-align: center;
       }
-      @media (max-width: 640px) {
+      @media (max-width: 780px) {
         .price-grid {
           grid-template-columns: 1fr;
+          gap: 24px;
         }
-        .plan.pro { padding-top: 32px; }
-        .plan .badge { position: static; margin-bottom: 16px; display: inline-block; }
+        .plan { padding: 24px; }
+        .plan.pro { padding-top: 36px; }
       }
       /* FAQ */
       .faq {
@@ -439,10 +502,10 @@
       details summary {
         cursor: pointer;
         list-style: none;
-        padding: 20px 40px 20px 0;
+        padding: 16px 36px 16px 0;
         font-family: var(--font-head);
         font-weight: 500;
-        font-size: 18px;
+        font-size: clamp(15px, 3vw, 18px);
         position: relative;
         color: var(--text);
       }
@@ -470,7 +533,7 @@
     </style>
   </head>
   <body>
-    <nav>
+    <nav aria-label="Main navigation">
       <div class="wrap nav-inner">
         <a href="#" class="logo"><span class="logo-mark">P</span> Possiber</a>
         <div class="nav-links">
@@ -491,9 +554,8 @@
             Study on YouTube. <span class="accent">Without YouTube.</span>
           </h1>
           <p class="sub">
-            Possiber turns any playlist into a clean, distraction-free study
-            queue. No recommendations, no comments, no autoplay rabbit holes —
-            just the videos you chose to learn from.
+            Turn any playlist into a clean study space. No recommendations, no
+            comments, no autoplay. Just the videos you chose.
           </p>
           <div class="store-buttons">
             <!-- TODO: replace href="#" with your Chrome Web Store listing URL -->
@@ -569,7 +631,7 @@
             <span class="n">01</span>
             <span class="thumb"></span>
             <span class="meta"
-              ><span class="t">Linear Algebra — Vectors</span
+              >              <span class="t">Linear Algebra: Vectors</span
               ><span class="d">now playing</span></span
             >
           </div>
@@ -605,7 +667,7 @@
           <h2>Built for finishing what you started.</h2>
           <p>
             Every feature does one thing: keep your attention on the lesson in
-            front of you. Here's what that looks like.
+            front of you.
           </p>
         </div>
 
@@ -633,8 +695,8 @@
             <span class="show-num">01</span>
             <h3>Your study queue, every new tab</h3>
             <p>
-              Open a new tab and Possiber greets you with what's next — not a
-              feed. One glance shows what you're studying and how much is left.
+              Open a new tab and see what's next. One glance shows what you're
+              studying and how much is left.
             </p>
             <div class="tags"><span class="tag-chip">New-tab page</span></div>
           </div>
@@ -662,8 +724,8 @@
             <span class="show-num">02</span>
             <h3>One click to lock in</h3>
             <p>
-              Flip a single switch and the noise is gone. No settings maze — focus
-              is on or off, and you decide the instant you need it.
+              Flip the switch and the noise is gone. No settings maze. Focus is
+              on or off, your choice.
             </p>
             <div class="tags"><span class="tag-chip">One-click focus</span></div>
           </div>
@@ -690,8 +752,8 @@
             <span class="show-num">03</span>
             <h3>See progress, tick off lessons</h3>
             <p>
-              A progress line tracks the whole playlist, and each lesson gets a
-              checkmark when you finish it. Momentum you can actually see.
+              A progress line tracks the whole playlist. Each lesson gets a
+              checkmark when you finish it.
             </p>
             <div class="tags">
               <span class="tag-chip">Progress line</span>
@@ -728,8 +790,8 @@
             <span class="show-num">04</span>
             <h3>Pick up exactly where you stopped</h3>
             <p>
-              Close the tab, come back tomorrow — Possiber remembers your place.
-              No hunting through a playlist to find where you were.
+              Close the tab, come back tomorrow. Possiber remembers your place.
+              No hunting through a playlist.
             </p>
             <div class="tags"><span class="tag-chip">Resume from last position</span></div>
           </div>
@@ -761,8 +823,7 @@
             <h3>Built-in Pomodoro + coin rewards</h3>
             <p>
               Work in focused rounds with timed breaks. The timer runs alongside
-              your video — no separate app, no switching tabs. Complete a session
-              and earn coins. The longer you focus, the more you earn.
+              your video. Complete a session and earn coins.
             </p>
             <div class="tags">
               <span class="tag-chip">Pomodoro</span>
@@ -795,9 +856,9 @@
             <span class="show-num">06</span>
             <h3>No sidebar. No comments. No rabbit holes.</h3>
             <p>
-              The three biggest attention traps on YouTube — the recommendation
-              sidebar, the comments section, and the "Up next" feed — are gone.
-              What's left is your video.
+              The three biggest attention traps on YouTube are gone. No
+              recommendation sidebar, no comments, no "Up next" feed. Just your
+              video.
             </p>
             <div class="tags">
               <span class="tag-chip">No sidebar</span>
@@ -832,9 +893,8 @@
             <span class="show-num">07</span>
             <h3>Earn coins for every session</h3>
             <p>
-              Complete a focus session and earn coins — the longer you focus, the
-              more you earn. Stop early and you lose some. It's a simple loop
-              that keeps you coming back.
+              Finish a focus session, earn coins. The longer you focus, the more
+              you earn. Stop early and you lose some.
             </p>
             <div class="tags">
               <span class="tag-chip">Coin rewards</span>
@@ -850,7 +910,7 @@
             <div class="frame" aria-hidden="true">
               <div class="frame-bar">
                 <span class="dot"></span><span class="dot"></span><span class="dot"></span>
-                <span class="frame-url">Possiber — Dashboard</span>
+                <span class="frame-url">Possiber: Dashboard</span>
               </div>
               <div class="frame-body">
                 <div class="mock-label">Your playlists</div>
@@ -876,9 +936,8 @@
             <span class="show-num">08</span>
             <h3>Your command center: the Dashboard</h3>
             <p>
-              See every playlist at a glance. Search across all your videos,
-              toggle progress dots, hide watched lessons, and sync with one
-              click. It's everything you need in a single view.
+              See every playlist at a glance. Search all your videos, toggle
+              progress dots, hide watched lessons, and sync with one click.
             </p>
             <div class="tags">
               <span class="tag-chip">Grid / List view</span>
@@ -940,8 +999,7 @@
             <h3>Themes that match your vibe</h3>
             <p>
               Dark and Light are free. Paper and Midnight are Pro. Pick the one
-              that fits your study environment — or switch whenever you feel like
-              it.
+              that fits your study space.
             </p>
             <div class="tags">
               <span class="tag-chip">4 themes</span>
@@ -975,9 +1033,8 @@
             <span class="show-num">10</span>
             <h3>Exit challenges that keep you honest</h3>
             <p>
-              Trying to leave a focus session? Type your custom focus phrase or
-              solve a quick math problem. It's a small friction that stops you
-              from quitting too early.
+              Trying to leave a focus session? Type your focus phrase or solve a
+              quick math problem. Small friction, big difference.
             </p>
             <div class="tags">
               <span class="tag-chip">Focus phrase</span>
@@ -1022,9 +1079,8 @@
             <span class="show-num">11</span>
             <h3>Whitelist the sites you need</h3>
             <p>
-              Need Spotify for study music or Notion for notes? Add any domain
-              to the whitelist and Possiber will allow it during focus sessions.
-              YouTube is always allowed.
+              Need Spotify for music or Notion for notes? Add any domain to the
+              whitelist. YouTube is always allowed.
             </p>
             <div class="tags">
               <span class="tag-chip">Whitelist</span>
@@ -1055,9 +1111,8 @@
             <span class="show-num">12</span>
             <h3>Navigation guard blocks rabbit holes</h3>
             <p>
-              Try to open Reddit, Twitter, or any non-whitelisted site during a
-              focus session? Possiber blocks the navigation and redirects you
-              back to your playlist. No willpower required.
+              Try to open Reddit or Twitter during focus? Possiber blocks it and
+              redirects you back. No willpower required.
             </p>
             <div class="tags">
               <span class="tag-chip">Navigation guard</span>
@@ -1098,9 +1153,9 @@
             <span class="show-num">13</span>
             <h3>Collections keep things tidy</h3>
             <p>
-              Organize playlists into folders — Physics, Chemistry, Side projects.
-              When your library grows, collections keep everything easy to find.
-              Pro feature.
+              Organize playlists into folders. Physics, Chemistry, Side projects.
+              When your library grows, collections help you find things fast. Pro
+              feature.
             </p>
             <div class="tags">
               <span class="tag-chip">Collections</span>
@@ -1142,9 +1197,8 @@
             <span class="show-num">14</span>
             <h3>To-Do list tied to your videos</h3>
             <p>
-              Create study tasks and link them to specific videos in your
-              playlists. Check them off as you go. Your to-dos stay in sync
-              across devices. Pro feature.
+              Create study tasks and link them to specific videos. Check them off
+              as you go. Your to-dos sync across devices. Pro feature.
             </p>
             <div class="tags">
               <span class="tag-chip">To-Do list</span>
@@ -1177,10 +1231,10 @@
           </div>
           <div class="show-copy">
             <span class="show-num">15</span>
-            <h3>Auto-mark complete — hands-free</h3>
+            <h3>Auto-mark complete, hands-free</h3>
             <p>
-              Watch a video past 90% and Possiber marks it done automatically.
-              No checkboxes, no manual tracking. Just watch and learn.
+              Watch a video past 90% and it's marked done. No checkboxes, no
+              manual tracking.
             </p>
             <div class="tags">
               <span class="tag-chip">Auto-complete</span>
@@ -1219,9 +1273,8 @@
             <span class="show-num">16</span>
             <h3>Export and import your data</h3>
             <p>
-              Download all your playlists, progress, and settings as a JSON
-              file. Restore it anytime. Move between browsers or keep a backup
-              — your data is never locked in.
+              Download all your playlists, progress, and settings as JSON.
+              Restore anytime. Move between browsers or keep a backup.
             </p>
             <div class="tags">
               <span class="tag-chip">Export JSON</span>
@@ -1268,8 +1321,8 @@
             <span class="show-num">17</span>
             <h3>Spend coins in the shop</h3>
             <p>
-              Earned enough coins? Spend them on cosmetic themes and items in
-              the Coin Shop. The more you study, the more you unlock.
+              Earned enough coins? Spend them on themes and items in the Coin
+              Shop. The more you study, the more you unlock.
             </p>
             <div class="tags">
               <span class="tag-chip">Coin shop</span>
@@ -1341,7 +1394,7 @@
             <div class="price-yearly">
               <div class="amount">$3.50<small> / month</small></div>
               <div class="yearly">
-                <span class="hl">$42 billed yearly</span> — save 30%
+                <span class="hl">$42 billed yearly</span>, save 30%
               </div>
             </div>
             <ul>
@@ -1386,10 +1439,10 @@
         <details open>
           <summary>What exactly does Possiber do?</summary>
           <p>
-            It runs on top of YouTube in your browser and strips away everything
-            that isn't your study video — recommendations, comments, Shorts, and
-            autoplay suggestions. You build playlists of the videos you actually
-            want to learn from, and Possiber plays through them cleanly.
+            It runs on top of YouTube in your browser and strips away
+            recommendations, comments, Shorts, and autoplay. You build playlists
+            of the videos you want to learn from, and Possiber plays through
+            them cleanly.
           </p>
         </details>
         <details>
@@ -1402,45 +1455,42 @@
         <details>
           <summary>What are the plans and what do they cost?</summary>
           <p>
-            Free gives you up to 2 playlists stored locally on your device, with
-            the full distraction-free player and no account required. Possiber
-            Pro ($5/month, or $42/year which works out to $3.50/month) unlocks
-            unlimited playlists and syncs them across all your devices. If you'd
-            rather not subscribe, Lifetime is a single $195 payment that includes
-            Pro and all future updates, forever.
+            Free gives you up to 2 playlists stored locally, with the full
+            distraction-free player. Pro ($5/month or $42/year) unlocks
+            unlimited playlists and syncs across all your devices. Lifetime is a
+            single $195 payment that includes Pro and all future updates.
           </p>
         </details>
         <details>
           <summary>How does billing work?</summary>
           <p>
-            Pro subscriptions are handled securely by Paddle, our payment
-            provider. You can pay monthly or yearly, and Paddle manages your
-            invoices and payment details — we never see your card information.
+            Pro subscriptions are handled by Paddle, our payment provider. You
+            can pay monthly or yearly. Paddle manages your invoices and payment
+            details. We never see your card.
           </p>
         </details>
         <details>
           <summary>Do you collect my data or watch history?</summary>
           <p>
-            No. Possiber never collects your browsing history or YouTube watch
-            history. On the free tier, your playlists live only on your device.
-            On Pro, we store your email (for login via Google) and your
-            subscription status — nothing more.
+            No. We never collect your browsing or watch history. On the free
+            tier, your playlists live only on your device. On Pro, we store your
+            email and subscription status, nothing more.
           </p>
         </details>
         <details>
           <summary>How do I cancel Pro?</summary>
           <p>
-            You can cancel anytime from your account. Your subscription stays
-            active until the end of the billing period, then drops back to the
-            free tier — your playlists aren't deleted.
+            Cancel anytime from your account. Your subscription stays active
+            until the end of the billing period, then drops back to free. Your
+            playlists aren't deleted.
           </p>
         </details>
         <details>
           <summary>Does Possiber access my YouTube account?</summary>
           <p>
             No. Possiber only cleans up the pages you're already viewing and
-            plays embedded videos. It doesn't log into, post to, or read
-            anything from your YouTube account.
+            plays embedded videos. It doesn't log into or read anything from
+            your YouTube account.
           </p>
         </details>
         <details>
@@ -1453,37 +1503,33 @@
         <details>
           <summary>What are coins and how do I earn them?</summary>
           <p>
-            Coins are rewards you earn by completing Pomodoro focus sessions.
-            The longer you focus, the more coins you get. For example, a 30-minute
-            session earns 30 coins, a 60-minute session earns 70 coins. If you
-            stop a session early, you lose some coins proportional to how far
-            you got.
+            Coins are rewards for completing Pomodoro focus sessions. The longer
+            you focus, the more you earn. A 30-minute session earns 30 coins, a
+            60-minute session earns 70. Stop early and you lose some.
           </p>
         </details>
         <details>
           <summary>What is the Dashboard?</summary>
           <p>
-            The Dashboard is a full-screen view of all your playlists. You can
-            switch between grid and list view, search across every video in
-            every playlist, toggle progress dots, hide watched lessons, and
-            trigger a manual sync with YouTube.
+            The Dashboard is a full-screen view of all your playlists. Switch
+            between grid and list view, search every video, toggle progress
+            dots, hide watched lessons, and sync with YouTube.
           </p>
         </details>
         <details>
           <summary>What are Collections?</summary>
           <p>
-            Collections let you organize playlists into folders — like "Physics",
-            "Chemistry", or "Side projects". They appear in the Dashboard and
-            help you keep things tidy when you have a lot of playlists. Pro
-            feature.
+            Collections let you organize playlists into folders. Physics,
+            Chemistry, Side projects. They help you keep things tidy when your
+            library grows. Pro feature.
           </p>
         </details>
         <details>
           <summary>What themes are available?</summary>
           <p>
             Free gives you Dark and Light. Pro adds Paper (warm cream tones) and
-            Midnight (deep dark with neon accents). You can switch themes anytime
-            from Settings.
+            Midnight (deep dark with neon accents). Switch anytime from
+            Settings.
           </p>
         </details>
       </div>
@@ -1498,7 +1544,7 @@
             >
             <p>
               A distraction-free way to study on YouTube. Built for people who
-              came to learn, not to scroll.
+              came to learn, not scroll.
             </p>
           </div>
           <div class="foot-links">
@@ -1528,107 +1574,6 @@
       </div>
     </footer>
 
-    <script>
-      // Billing toggle: swaps monthly/yearly Pro pricing by toggling a class on <body>.
-      (function () {
-        var sw = document.getElementById("billingSwitch");
-        var segM = document.querySelector(".seg-monthly");
-        var segY = document.querySelector(".seg-yearly");
-        if (!sw) return;
-        var ctaPro = document.getElementById("cta-pro");
-        sw.addEventListener("click", function () {
-          var yearly = document.body.classList.toggle("yearly");
-          sw.setAttribute("aria-checked", yearly ? "true" : "false");
-          segM.classList.toggle("active", !yearly);
-          segY.classList.toggle("active", yearly);
-          // Point the Pro button at the matching plan on the checkout page.
-          if (ctaPro)
-            ctaPro.setAttribute(
-              "href",
-              yearly ? "checkout.html?plan=annual" : "checkout.html?plan=monthly",
-            );
-        });
-      })();
-    </script>
-    <script>
-      // Supabase Auth — enables "Get Pro" buttons to sign in and open checkout
-      (function () {
-        var SUPABASE_URL = "https://ksstiahpharqtqvvglsw.supabase.co";
-        var SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imtzc3RpYWhwaGFycXRxdnZnbHN3Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODQ1Mjg1ODIsImV4cCI6MjEwMDEwNDU4Mn0.QUuYhEjsbh1tghr3vLeYDNvMMT5NjkpiewzD2JZllR0";
-        var supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
-        var CHECKOUT_URL = "checkout.html";
-
-        // Get current session
-        async function getSession() {
-          var result = await supabase.auth.getSession();
-          return result.data.session;
-        }
-
-        // Sign in with Google
-        async function signInWithGoogle() {
-          var result = await supabase.auth.signInWithOAuth({
-            provider: "google",
-            options: { redirectTo: window.location.origin + window.location.pathname },
-          });
-          if (result.error) console.error("Auth error:", result.error);
-        }
-
-        // Open checkout with user context
-        async function openCheckout(plan) {
-          var session = await getSession();
-          if (!session) {
-            // Not signed in — trigger Google OAuth
-            await signInWithGoogle();
-            return;
-          }
-          var uid = session.user.id;
-          var email = session.user.email || "";
-          var url = new URL(CHECKOUT_URL, window.location.origin);
-          url.searchParams.set("plan", plan);
-          url.searchParams.set("uid", uid);
-          url.searchParams.set("email", email);
-          window.open(url.toString(), "_blank");
-        }
-
-        // Wire up all "Get Pro" buttons and sign-in link
-        function wireButtons() {
-          var ctaPro = document.getElementById("cta-pro");
-          if (ctaPro) {
-            ctaPro.addEventListener("click", function (e) {
-              e.preventDefault();
-              var plan = ctaPro.getAttribute("href").includes("annual") ? "annual" : "monthly";
-              openCheckout(plan);
-            });
-          }
-          var ctaLifetime = document.querySelector('a[href="checkout.html?plan=lifetime"]');
-          if (ctaLifetime) {
-            ctaLifetime.addEventListener("click", function (e) {
-              e.preventDefault();
-              openCheckout("lifetime");
-            });
-          }
-          var navSignin = document.getElementById("nav-signin");
-          if (navSignin) {
-            navSignin.addEventListener("click", function (e) {
-              e.preventDefault();
-              signInWithGoogle();
-            });
-          }
-        }
-
-        // Handle OAuth callback (user just signed in)
-        async function handleCallback() {
-          var hash = window.location.hash;
-          if (hash && hash.includes("access_token")) {
-            // Supabase Auth stores session from URL hash automatically
-            // Clean up the URL
-            window.history.replaceState(null, "", window.location.pathname);
-          }
-        }
-
-        // Init
-        handleCallback().then(wireButtons);
-      })();
-    </script>
+    <script type="module" src="/src/main.js"></script>
   </body>
 </html>

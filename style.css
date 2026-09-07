@@ -17,18 +17,18 @@
   --teal-dim:     #0d9488;
   --teal-bright:  #1ad6c2;
   --teal-glow:    rgba(20,184,166,.15);
-  --teal-subtle:  rgba(20,184,166,.07);
+  --teal-subtle:  rgba(20,184,166,.12);
 
   /* [MUZZISH] surfaces — near-black with a faint teal undertone */
   --bg:           #0B0F0E;
-  --bg-card:      #111816;
-  --bg-raised:    #161e1c;
-  --border:       #1e2b28;
+  --bg-card:      #151f1c;
+  --bg-raised:    #1c2824;
+  --border:       #2a3d38;
 
   /* [MUZZISH] text */
   --text:         #e8f0ef;
   --text-muted:   #7a9e99;
-  --text-faint:   #3d5c58;
+  --text-faint:   #5a8580;
 
   /* [MUZZISH] type */
   --font-head:    'Space Grotesk', sans-serif;
@@ -41,13 +41,13 @@
   --space-sm:     8px;
   --space-md:     16px;
   --space-lg:     32px;
-  --space-xl:     64px;
+  --space-xl:     48px;
   --shadow:       0 2px 12px rgba(0,0,0,.4);
 }
 
 /* --------------------------------------------------------------- base --- */
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-html { scroll-behavior: smooth; }
+html { scroll-behavior: smooth; overflow-x: hidden; }
 body {
   background: var(--bg);
   color: var(--text);
@@ -94,7 +94,7 @@ h1, h2, h3 { font-family: var(--font-head); font-weight: 600; line-height: 1.1; 
 .showcase { border-top: 1px solid var(--border); }
 .show-row {
   display: grid; grid-template-columns: 1fr 1fr; gap: 56px;
-  align-items: center; padding: var(--space-xl) 0;
+  align-items: center; padding: var(--space-lg) 0;
   border-bottom: 1px solid var(--border);
 }
 .show-row:last-child { border-bottom: 0; }
@@ -217,7 +217,7 @@ footer { border-top: 1px solid var(--border); padding: var(--space-xl) 0 var(--s
 .foot-grid { display: flex; justify-content: space-between; align-items: flex-start; gap: 32px; flex-wrap: wrap; }
 .foot-brand { max-width: 30ch; }
 .foot-brand p { color: var(--text-muted); font-size: 14px; margin-top: 12px; }
-.foot-links { display: flex; gap: 56px; flex-wrap: wrap; }
+.foot-links { display: flex; gap: 32px; flex-wrap: wrap; }
 .foot-col h4 {
   font-family: var(--font-mono); font-size: 11px; letter-spacing: .12em;
   text-transform: uppercase; color: var(--text-faint);
@@ -226,13 +226,17 @@ footer { border-top: 1px solid var(--border); padding: var(--space-xl) 0 var(--s
 .foot-col a { display: block; color: var(--text-muted); font-size: 14px; padding: 5px 0; }
 .foot-col a:hover { color: var(--teal); }
 .foot-bottom {
-  margin-top: var(--space-xl); padding-top: var(--space-lg);
+  margin-top: var(--space-lg); padding-top: var(--space-md);
   border-top: 1px solid var(--border);
   display: flex; justify-content: space-between; gap: 16px; flex-wrap: wrap;
   font-family: var(--font-mono); font-size: 12px; color: var(--text-faint);
 }
 .made-by a { color: var(--text-muted); }
 .made-by a:hover { color: var(--teal); }
+
+@media (max-width: 640px) {
+  .foot-links { flex-direction: column; gap: 24px; }
+}
 
 /* ----------------------------------------------------- legal / prose --- */
 /* Used by privacy.html and terms.html */
@@ -246,7 +250,7 @@ footer { border-top: 1px solid var(--border); padding: var(--space-xl) 0 var(--s
 }
 .doc .lead { font-size: 18px; color: var(--text-muted); margin-bottom: var(--space-lg); }
 .doc h2 {
-  font-size: 22px; margin: var(--space-xl) 0 var(--space-md);
+  font-size: 22px; margin: var(--space-lg) 0 var(--space-md);
   padding-top: var(--space-md);
 }
 .doc h2:first-of-type { margin-top: var(--space-lg); }
@@ -281,7 +285,8 @@ footer { border-top: 1px solid var(--border); padding: var(--space-xl) 0 var(--s
   text-transform: uppercase; color: var(--text-faint); font-weight: 400;
 }
 .doc td { color: var(--text-muted); }
-.doc td:first-child { color: var(--text); white-space: nowrap; }
+.doc td:first-child { color: var(--text); }
+.doc table { display: block; overflow-x: auto; -webkit-overflow-scrolling: touch; }
 
 /* back link at top of legal pages */
 .back {
@@ -289,6 +294,11 @@ footer { border-top: 1px solid var(--border); padding: var(--space-xl) 0 var(--s
   display: inline-block; margin-bottom: var(--space-lg);
 }
 .back:hover { color: var(--teal); }
+
+@media (max-width: 480px) {
+  .doc-wrap { padding: 0 16px; }
+  .callout { padding: 16px; }
+}
 
 /* ------------------------------------------------------------- a11y --- */
 :focus-visible { outline: 2px solid var(--teal); outline-offset: 3px; border-radius: 0; }
