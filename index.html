@@ -81,17 +81,17 @@
     <style>
       /* HERO */
       .hero {
-        padding: clamp(48px, 8vw, 88px) 0 var(--space-xl);
+        padding: clamp(24px, 4vw, 48px) 0 var(--space-md);
       }
       .hero-grid {
         display: grid;
         grid-template-columns: 1fr 1fr;
-        gap: 56px;
+        gap: 32px;
         align-items: center;
       }
       .hero h1 {
         font-size: clamp(38px, 6vw, 62px);
-        margin-bottom: var(--space-lg);
+        margin-bottom: var(--space-md);
       }
       .hero h1 .accent {
         color: var(--teal);
@@ -100,7 +100,7 @@
         font-size: clamp(17px, 2.2vw, 20px);
         color: var(--text-muted);
         max-width: 30ch;
-        margin-bottom: var(--space-lg);
+        margin-bottom: var(--space-md);
       }
       .hero-cta {
         display: flex;
@@ -112,7 +112,7 @@
         font-family: var(--font-mono);
         font-size: 12px;
         color: var(--text-faint);
-        margin-top: 18px;
+        margin-top: 12px;
       }
       .browsers {
         display: flex;
@@ -132,7 +132,7 @@
         background: var(--bg-card);
         border: 1px solid var(--border);
         border-radius: var(--radius-lg);
-        padding: 18px;
+        padding: 14px;
         box-shadow: var(--shadow);
         position: relative;
         overflow: hidden;
@@ -152,7 +152,7 @@
         display: flex;
         align-items: center;
         gap: 6px;
-        margin-bottom: 16px;
+        margin-bottom: 10px;
       }
       .dot {
         width: 10px;
@@ -197,8 +197,8 @@
       .queue-item {
         display: flex;
         align-items: center;
-        gap: 12px;
-        padding: 11px 12px;
+        gap: 10px;
+        padding: 7px 10px;
         border-radius: var(--radius);
         border: 1px solid transparent;
       }
@@ -209,8 +209,8 @@
         width: 20px;
       }
       .queue-item .thumb {
-        width: 46px;
-        height: 30px;
+        width: 40px;
+        height: 26px;
         background: var(--bg-raised);
         flex-shrink: 0;
         border: 1px solid var(--border);
@@ -241,8 +241,8 @@
       .noise {
         display: flex;
         align-items: center;
-        gap: 10px;
-        padding: 10px 12px;
+        gap: 8px;
+        padding: 5px 10px;
         border-radius: var(--radius);
         color: var(--text-faint);
         font-size: 13px;
@@ -260,13 +260,13 @@
         letter-spacing: 0.12em;
         color: var(--text-faint);
         text-transform: uppercase;
-        margin: 14px 4px 6px;
+        margin: 8px 4px 4px;
       }
 
       @media (max-width: 860px) {
         .hero-grid {
           grid-template-columns: 1fr;
-          gap: 40px;
+          gap: 28px;
         }
         .hero p.sub {
           max-width: none;
