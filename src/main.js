@@ -205,6 +205,31 @@ function initPaddleCheckout() {
 }
 
 // ---------------------------------------------------------------------------
+// Section Tracking — highlights active nav link based on scroll position
+// ---------------------------------------------------------------------------
+function initSectionTracking() {
+  const sections = document.querySelectorAll("section[id], header[id]");
+  const navLinks = document.querySelectorAll(".nav-link[data-section]");
+  if (!sections.length || !navLinks.length) return;
+
+  const observer = new IntersectionObserver(
+    (entries) => {
+      entries.forEach((entry) => {
+        if (entry.isIntersecting) {
+          const id = entry.target.getAttribute("id");
+          navLinks.forEach((link) => {
+            link.classList.toggle("active", link.dataset.section === id);
+          });
+        }
+      });
+    },
+    { rootMargin: "-40% 0px -55% 0px" }
+  );
+
+  sections.forEach((section) => observer.observe(section));
+}
+
+// ---------------------------------------------------------------------------
 // Router: detect page and init
 // ---------------------------------------------------------------------------
 const page = document.documentElement.dataset.page;
@@ -212,6 +237,7 @@ const page = document.documentElement.dataset.page;
 if (page === "index") {
   initBillingToggle();
   initSupabaseAuth();
+  initSectionTracking();
 } else if (page === "checkout") {
   initPaddleCheckout();
 }

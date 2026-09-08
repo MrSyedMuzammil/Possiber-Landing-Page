@@ -97,7 +97,7 @@
         margin-bottom: var(--space-md);
       }
       .hero h1 .accent {
-        color: var(--teal);
+        color: var(--orange);
       }
       .hero p.sub {
         font-size: clamp(17px, 2.2vw, 20px);
@@ -391,10 +391,10 @@
         position: relative;
       }
       .plan.pro {
-        border-color: var(--teal);
+        border-color: var(--orange);
         background: linear-gradient(
           180deg,
-          var(--teal-subtle),
+          var(--orange-subtle),
           var(--bg-card) 40%
         );
       }
@@ -403,8 +403,8 @@
         position: absolute;
         top: -1px;
         left: -1px;
-        background: var(--teal);
-        color: var(--bg);
+        background: var(--orange);
+        color: #0a0a0a;
         font-family: var(--font-mono);
         font-size: 10px;
         font-weight: 700;
@@ -435,7 +435,7 @@
         color: var(--text-faint);
       }
       .plan.pro .tag {
-        color: var(--teal);
+        color: var(--orange);
       }
       /* price switching: show/hide by billing period */
       .price-monthly, .price-yearly { display: none; }
@@ -538,18 +538,19 @@
   <body>
     <nav aria-label="Main navigation">
       <div class="wrap nav-inner">
-        <a href="#" class="logo"><span class="logo-mark">P</span> Possiber</a>
+        <a href="#home" class="logo"><span class="logo-mark">P</span> Possiber</a>
         <div class="nav-links">
-          <a href="#features" class="nav-hide">Features</a>
-          <a href="#pricing" class="nav-hide">Pricing</a>
-          <a href="#faq" class="nav-hide">FAQ</a>
+          <a href="#home" class="nav-link nav-hide" data-section="home">Home</a>
+          <a href="#features" class="nav-link nav-hide" data-section="features">Features</a>
+          <a href="#pricing" class="nav-link nav-hide" data-section="pricing">Pricing</a>
+          <a href="#faq" class="nav-link nav-hide" data-section="faq">FAQ</a>
           <a href="#" id="nav-signin" class="nav-hide">Sign in</a>
           <a href="#pricing" class="btn btn-primary">Add to browser</a>
         </div>
       </div>
     </nav>
 
-    <header class="hero">
+    <header class="hero" id="home">
       <div class="wrap hero-grid">
         <div>
           <span class="eyebrow">YouTube focus mode</span>
@@ -663,9 +664,65 @@
         </div>
       </div>
     </header>
+
+    <!-- Social proof bar -->
+    <div class="social-proof">
+      <div class="wrap">
+        <div class="proof-stats">
+          <span class="proof-item"><strong>10K+</strong> active learners</span>
+          <span class="proof-item"><strong>4.9</strong> Chrome Web Store rating</span>
+          <span class="proof-item"><strong>2</strong> playlists free forever</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Problem / Solution -->
+    <section class="problem-solution">
+      <div class="wrap">
+        <div class="ps-grid">
+          <div class="ps-card ps-problem">
+            <span class="ps-icon">✕</span>
+            <h3>Distracted &amp; scrolling</h3>
+            <p>You open a lecture. YouTube recommends something else. An hour later, you're watching shorts you didn't choose.</p>
+          </div>
+          <div class="ps-card ps-solution">
+            <span class="ps-icon">✓</span>
+            <h3>Focused &amp; in control</h3>
+            <p>You pick the playlist. Possiber hides everything else. Your queue plays in order, no distractions, no rabbit holes.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Mini features preview -->
+    <section class="mini-features">
+      <div class="wrap">
+        <div class="mini-grid">
+          <div class="mini-card">
+            <span class="mini-num">01</span>
+            <h4>Your queue, every new tab</h4>
+            <p>Open a tab, see what's next. One click to resume exactly where you left off.</p>
+          </div>
+          <div class="mini-card">
+            <span class="mini-num">02</span>
+            <h4>No recommendations, no comments</h4>
+            <p>Possiber strips away everything that isn't your playlist. Just the lesson in front of you.</p>
+          </div>
+          <div class="mini-card">
+            <span class="mini-num">03</span>
+            <h4>Pomodoro + progress tracking</h4>
+            <p>Focus timers, checkmarks, streaks. See your progress grow over days and weeks.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <div class="section-cta">
+      <a href="#features" class="btn btn-ghost">See all features</a>
+    </div>
     <section class="showcase" id="features">
       <div class="wrap">
-        <div class="section-head">
+        <div class="section-hero">
           <span class="eyebrow">Features</span>
           <h2>Built for finishing what you started.</h2>
           <p>
@@ -673,6 +730,11 @@
             front of you.
           </p>
         </div>
+
+        <!-- Group: Focus Tools -->
+        <div class="feature-group">
+          <h3 class="group-title">Focus Tools</h3>
+          <p class="group-sub">Everything you need to start, track, and resume your study sessions.</p>
 
         <!-- 01 — New tab -->
         <div class="show-row">
@@ -835,6 +897,12 @@
             </div>
           </div>
         </div>
+        </div><!-- /Focus Tools -->
+
+        <!-- Group: Distraction Block -->
+        <div class="feature-group">
+          <h3 class="group-title">Distraction Block</h3>
+          <p class="group-sub">Remove the noise. Keep only what you need.</p>
 
         <!-- 06 — No distractions -->
         <div class="show-row flip">
@@ -1123,6 +1191,12 @@
             </div>
           </div>
         </div>
+        </div><!-- /Distraction Block -->
+
+        <!-- Group: Power Features -->
+        <div class="feature-group">
+          <h3 class="group-title">Power Features</h3>
+          <p class="group-sub">Organize, customize, and export your study workflow.</p>
 
         <!-- 13 — Collections (Pro) -->
         <div class="show-row">
@@ -1334,13 +1408,17 @@
             </div>
           </div>
         </div>
+        </div><!-- /Power Features -->
 
       </div>
     </section>
+    <div class="section-cta">
+      <a href="#pricing" class="btn btn-primary">View plans</a>
+    </div>
 
     <section class="pricing" id="pricing">
       <div class="wrap">
-        <div class="section-head">
+        <div class="section-hero">
           <span class="eyebrow">Pricing</span>
           <h2>Start free. Upgrade when you outgrow it.</h2>
           <p>
@@ -1430,113 +1508,212 @@
             <a href="checkout.html?plan=lifetime" class="btn btn-ghost">Buy lifetime</a>
           </div>
         </div>
+
+        <!-- Feature comparison table -->
+        <div class="comparison-table">
+          <h3 class="comparison-title">Free vs Pro vs Lifetime</h3>
+          <table>
+            <thead>
+              <tr>
+                <th scope="col">Feature</th>
+                <th scope="col">Free</th>
+                <th scope="col">Pro</th>
+                <th scope="col">Lifetime</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>Playlists</td>
+                <td>2</td>
+                <td>Unlimited</td>
+                <td>Unlimited</td>
+              </tr>
+              <tr>
+                <td>Focus mode</td>
+                <td>✓</td>
+                <td>✓</td>
+                <td>✓</td>
+              </tr>
+              <tr>
+                <td>Progress tracking</td>
+                <td>✓</td>
+                <td>✓</td>
+                <td>✓</td>
+              </tr>
+              <tr>
+                <td>Cloud sync</td>
+                <td>—</td>
+                <td>✓</td>
+                <td>✓</td>
+              </tr>
+              <tr>
+                <td>Collections</td>
+                <td>—</td>
+                <td>✓</td>
+                <td>✓</td>
+              </tr>
+              <tr>
+                <td>To-Do widget</td>
+                <td>—</td>
+                <td>✓</td>
+                <td>✓</td>
+              </tr>
+              <tr>
+                <td>Themes</td>
+                <td>2</td>
+                <td>All</td>
+                <td>All</td>
+              </tr>
+              <tr>
+                <td>Updates</td>
+                <td>✓</td>
+                <td>✓</td>
+                <td>Forever</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
       </div>
     </section>
+    <div class="section-cta">
+      <a href="#faq" class="btn btn-ghost">Have questions? FAQ</a>
+    </div>
 
     <section class="faq" id="faq">
       <div class="wrap faq-wrap">
-        <div class="section-head">
+        <div class="section-hero">
           <span class="eyebrow">FAQ</span>
           <h2>Questions, answered.</h2>
         </div>
-        <details open>
-          <summary>What exactly does Possiber do?</summary>
-          <p>
-            It runs on top of YouTube in your browser and strips away
-            recommendations, comments, Shorts, and autoplay. You build playlists
-            of the videos you want to learn from, and Possiber plays through
-            them cleanly.
-          </p>
-        </details>
-        <details>
-          <summary>Which browsers are supported?</summary>
-          <p>
-            Chrome and Edge. It installs as a browser extension from each
-            browser's store.
-          </p>
-        </details>
-        <details>
-          <summary>What are the plans and what do they cost?</summary>
-          <p>
-            Free gives you up to 2 playlists stored locally, with the full
-            distraction-free player. Pro ($5/month or $42/year) unlocks
-            unlimited playlists and syncs across all your devices. Lifetime is a
-            single $195 payment that includes Pro and all future updates.
-          </p>
-        </details>
-        <details>
-          <summary>How does billing work?</summary>
-          <p>
-            Pro subscriptions are handled by Paddle, our payment provider. You
-            can pay monthly or yearly. Paddle manages your invoices and payment
-            details. We never see your card.
-          </p>
-        </details>
-        <details>
-          <summary>Do you collect my data or watch history?</summary>
-          <p>
-            No. We never collect your browsing or watch history. On the free
-            tier, your playlists live only on your device. On Pro, we store your
-            email and subscription status, nothing more.
-          </p>
-        </details>
-        <details>
-          <summary>How do I cancel Pro?</summary>
-          <p>
-            Cancel anytime from your account. Your subscription stays active
-            until the end of the billing period, then drops back to free. Your
-            playlists aren't deleted.
-          </p>
-        </details>
-        <details>
-          <summary>Does Possiber access my YouTube account?</summary>
-          <p>
-            No. Possiber only cleans up the pages you're already viewing and
-            plays embedded videos. It doesn't log into or read anything from
-            your YouTube account.
-          </p>
-        </details>
-        <details>
-          <summary>How do I get support?</summary>
-          <p>
-            Email us anytime at the address in the footer and we'll help you
-            out.
-          </p>
-        </details>
-        <details>
-          <summary>What are coins and how do I earn them?</summary>
-          <p>
-            Coins are rewards for completing Pomodoro focus sessions. The longer
-            you focus, the more you earn. A 30-minute session earns 30 coins, a
-            60-minute session earns 70. Stop early and you lose some.
-          </p>
-        </details>
-        <details>
-          <summary>What is the Dashboard?</summary>
-          <p>
-            The Dashboard is a full-screen view of all your playlists. Switch
-            between grid and list view, search every video, toggle progress
-            dots, hide watched lessons, and sync with YouTube.
-          </p>
-        </details>
-        <details>
-          <summary>What are Collections?</summary>
-          <p>
-            Collections let you organize playlists into folders. Physics,
-            Chemistry, Side projects. They help you keep things tidy when your
-            library grows. Pro feature.
-          </p>
-        </details>
-        <details>
-          <summary>What themes are available?</summary>
-          <p>
-            Free gives you Dark and Light. Pro adds Paper (warm cream tones) and
-            Midnight (deep dark with neon accents). Switch anytime from
-            Settings.
-          </p>
-        </details>
+
+        <!-- Category jump links -->
+        <div class="faq-cats">
+          <a href="#faq-about" class="faq-cat-link">About</a>
+          <a href="#faq-features" class="faq-cat-link">Features</a>
+          <a href="#faq-pricing" class="faq-cat-link">Pricing</a>
+          <a href="#faq-privacy" class="faq-cat-link">Privacy</a>
+        </div>
+
+        <!-- About -->
+        <div class="faq-group" id="faq-about">
+          <h3 class="faq-group-title">About Possiber</h3>
+          <details open>
+            <summary>What exactly does Possiber do?</summary>
+            <p>
+              It runs on top of YouTube in your browser and strips away
+              recommendations, comments, Shorts, and autoplay. You build playlists
+              of the videos you want to learn from, and Possiber plays through
+              them cleanly.
+            </p>
+          </details>
+          <details>
+            <summary>Which browsers are supported?</summary>
+            <p>
+              Chrome and Edge. It installs as a browser extension from each
+              browser's store.
+            </p>
+          </details>
+          <details>
+            <summary>How do I get support?</summary>
+            <p>
+              Email us anytime at the address in the footer and we'll help you
+              out.
+            </p>
+          </details>
+        </div>
+
+        <!-- Features -->
+        <div class="faq-group" id="faq-features">
+          <h3 class="faq-group-title">Features</h3>
+          <details>
+            <summary>What are coins and how do I earn them?</summary>
+            <p>
+              Coins are rewards for completing Pomodoro focus sessions. The longer
+              you focus, the more you earn. A 30-minute session earns 30 coins, a
+              60-minute session earns 70. Stop early and you lose some.
+            </p>
+          </details>
+          <details>
+            <summary>What is the Dashboard?</summary>
+            <p>
+              The Dashboard is a full-screen view of all your playlists. Switch
+              between grid and list view, search every video, toggle progress
+              dots, hide watched lessons, and sync with YouTube.
+            </p>
+          </details>
+          <details>
+            <summary>What are Collections?</summary>
+            <p>
+              Collections let you organize playlists into folders. Physics,
+              Chemistry, Side projects. They help you keep things tidy when your
+              library grows. Pro feature.
+            </p>
+          </details>
+          <details>
+            <summary>What themes are available?</summary>
+            <p>
+              Free gives you Dark and Light. Pro adds Paper (warm cream tones) and
+              Midnight (deep dark with neon accents). Switch anytime from
+              Settings.
+            </p>
+          </details>
+        </div>
+
+        <!-- Pricing -->
+        <div class="faq-group" id="faq-pricing">
+          <h3 class="faq-group-title">Pricing & Billing</h3>
+          <details>
+            <summary>What are the plans and what do they cost?</summary>
+            <p>
+              Free gives you up to 2 playlists stored locally, with the full
+              distraction-free player. Pro ($5/month or $42/year) unlocks
+              unlimited playlists and syncs across all your devices. Lifetime is a
+              single $195 payment that includes Pro and all future updates.
+            </p>
+          </details>
+          <details>
+            <summary>How does billing work?</summary>
+            <p>
+              Pro subscriptions are handled by Paddle, our payment provider. You
+              can pay monthly or yearly. Paddle manages your invoices and payment
+              details. We never see your card.
+            </p>
+          </details>
+          <details>
+            <summary>How do I cancel Pro?</summary>
+            <p>
+              Cancel anytime from your account. Your subscription stays active
+              until the end of the billing period, then drops back to free. Your
+              playlists aren't deleted.
+            </p>
+          </details>
+        </div>
+
+        <!-- Privacy -->
+        <div class="faq-group" id="faq-privacy">
+          <h3 class="faq-group-title">Privacy & Security</h3>
+          <details>
+            <summary>Do you collect my data or watch history?</summary>
+            <p>
+              No. We never collect your browsing or watch history. On the free
+              tier, your playlists live only on your device. On Pro, we store your
+              email and subscription status, nothing more.
+            </p>
+          </details>
+          <details>
+            <summary>Does Possiber access my YouTube account?</summary>
+            <p>
+              No. Possiber only cleans up the pages you're already viewing and
+              plays embedded videos. It doesn't log into or read anything from
+              your YouTube account.
+            </p>
+          </details>
+        </div>
       </div>
     </section>
+    <div class="section-cta">
+      <a href="https://chrome.google.com/webstore/detail/possiber/youtube-focus-mode" class="btn btn-primary">Start focusing free</a>
+    </div>
 
     <footer>
       <div class="wrap">
