@@ -4747,8 +4747,63 @@ Good, the last commit is undone but changes are still staged. Now let me re-comm
  create mode 100644 package.json
  create mode 100644 src/main.js
  create mode 100644 vite.config.js
-
 ```
+
+---
+
+## Phase 12: Orange Focus Highlights
+
+Applied subtle orange highlighting to active/selected elements across entire site.
+
+### Color Logic
+| State | Color | Meaning |
+|-------|-------|---------|
+| **Active/Selected** | Orange (subtle bg + border) | "This is what's happening now" |
+| **Completed/Done** | Orange | "This is finished" |
+| **Inactive/Muted** | Darker shades | "This is in the background" |
+| **Removed/Blocked** | Orange-dim + strikethrough | "This was removed" |
+
+### Changes Made
+
+**CSS (style.css):**
+- `.mock-check.done` → orange (was teal)
+- `.mock-strike` → orange-dim (was teal-dim)
+- `.mock-progress span` → orange (was teal)
+- `.mock-toggle`, `.mock-toggle .switch` → orange (was teal)
+- `.mock-timer-big` → orange (was teal)
+- `.store-btn:hover` → orange (was teal)
+- `.section-eyebrow` → orange (was teal)
+- `.proof-item strong` → orange (was teal)
+- `.ps-solution` border + icon → orange (was teal)
+- `.mini-num` → orange (was teal)
+- `.mock-check` border + color → orange (was teal)
+- `.callout` bg + border → orange (was teal)
+- `.back:hover` → orange (was teal)
+
+**Inline Styles (index.html):**
+- Hero device: radial gradient → orange-subtle, timer → orange, pulse → orange
+- Queue item active → orange-subtle bg + orange border + orange number
+- Noise/hidden items → orange-dim (was teal-dim)
+- Card hover → orange (was teal)
+- Card number → orange (was teal)
+- Billing toggle switch + save badge → orange (was teal)
+- Plan checkmarks → orange (was teal)
+- FAQ plus icon → orange (was teal)
+- Feature 04 (Resume) active row → orange (was teal)
+- Feature 05 (Pomodoro) coins badge → orange (was teal)
+- Feature 06 (No distractions) success badge → orange (was teal)
+- Feature 07 (Coins) +70 coins → orange (was teal)
+- Feature 08 (Dashboard) first playlist card → orange border
+- Feature 10 (Themes) active theme → orange (was teal)
+- Feature 11 (Exit challenges) redirect badge → orange (was teal)
+- Feature 12 (Whitelist) checkmarks → orange (was teal)
+- Feature 13 (Collections) collection names → orange (was teal)
+- Feature 15 (Auto-mark) badge → orange (was teal)
+- Feature 16 (Export) export button → orange (was teal)
+- Feature 17 (Coin shop) price → orange (was teal)
+
+### Build Result
+✅ `npm run build` passes — all 6 files built successfully.
 
 ---
 
@@ -4759,6 +4814,40 @@ _Thinking:_
 Done. The commit message is now more descriptive and well-structured.
 
 Done. New commit `944db7f` with a clear, structured message covering all changes.
+
+---
+
+## Phase 13: Reveal Animations (Muzzish.com-style)
+
+Added scroll-triggered fade-up animations matching muzzish.com's reveal system.
+
+### What Was Added
+
+**CSS (style.css):**
+- `@keyframes fade-up` — opacity 0→1 + translateY(14px→0) over 0.7s
+- `.reveal` — starts at opacity:0
+- `.reveal-in` — triggers animation with optional `--reveal-delay` stagger
+- `prefers-reduced-motion` — disables animations for users who prefer it
+
+**JS (src/main.js):**
+- `initRevealAnimations()` — IntersectionObserver on `[data-reveal]` elements
+- Adds `reveal-in` class when 12% visible, then unobserves
+- Called on index page load
+
+**HTML (index.html) — 25+ elements with `data-reveal`:**
+- Hero: eyebrow, h1, sub, store-buttons, device mock (staggered 0-320ms)
+- Social proof: proof-stats
+- Problem/Solution: both cards (staggered)
+- Mini features: all 3 cards (staggered 0-200ms)
+- Features section: eyebrow, h2, sub
+- Feature groups: all 3 group-titles + subs
+- All 17 show-rows
+- Pricing: eyebrow, h2, sub, all 3 plan cards (staggered)
+- FAQ: eyebrow, h2
+- Comparison table: title + table
+
+### Build Result
+✅ `npm run build` passes — all 6 files built successfully.
 
 ---
 

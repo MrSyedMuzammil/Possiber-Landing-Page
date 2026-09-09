@@ -205,6 +205,28 @@ function initPaddleCheckout() {
 }
 
 // ---------------------------------------------------------------------------
+// Reveal Animations — fade-up on scroll for [data-reveal] elements
+// ---------------------------------------------------------------------------
+function initRevealAnimations() {
+  const els = document.querySelectorAll("[data-reveal]");
+  if (!els.length) return;
+
+  const observer = new IntersectionObserver(
+    (entries) => {
+      for (const entry of entries) {
+        if (entry.isIntersecting) {
+          entry.target.classList.add("reveal-in");
+          observer.unobserve(entry.target);
+        }
+      }
+    },
+    { threshold: 0.12 }
+  );
+
+  els.forEach((el) => observer.observe(el));
+}
+
+// ---------------------------------------------------------------------------
 // Section Tracking — highlights active nav link based on scroll position
 // ---------------------------------------------------------------------------
 function initSectionTracking() {
@@ -230,6 +252,33 @@ function initSectionTracking() {
 }
 
 // ---------------------------------------------------------------------------
+// Page Transitions — fade out → scroll → instant appear
+// ---------------------------------------------------------------------------
+function initPageTransitions() {
+  const overlay = document.getElementById("page-overlay");
+  const navLinks = document.querySelectorAll("[data-section]");
+  if (!overlay || !navLinks.length) return;
+
+  navLinks.forEach((link) => {
+    link.addEventListener("click", (e) => {
+      e.preventDefault();
+      const targetId = link.dataset.section;
+      const target = document.getElementById(targetId);
+      if (!target) return;
+
+      // Fade in overlay
+      overlay.classList.add("active");
+
+      // After fade completes, scroll and remove overlay
+      setTimeout(() => {
+        target.scrollIntoView({ behavior: "instant" });
+        overlay.classList.remove("active");
+      }, 300);
+    });
+  });
+}
+
+// ---------------------------------------------------------------------------
 // Router: detect page and init
 // ---------------------------------------------------------------------------
 const page = document.documentElement.dataset.page;
@@ -238,6 +287,8 @@ if (page === "index") {
   initBillingToggle();
   initSupabaseAuth();
   initSectionTracking();
+  initRevealAnimations();
+  initPageTransitions();
 } else if (page === "checkout") {
   initPaddleCheckout();
 }

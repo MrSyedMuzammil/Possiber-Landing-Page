@@ -146,7 +146,7 @@
         inset: 0;
         background: radial-gradient(
           120% 80% at 80% 0%,
-          var(--teal-subtle),
+          var(--orange-subtle),
           transparent 60%
         );
         pointer-events: none;
@@ -174,8 +174,8 @@
         font-family: var(--font-mono);
         font-weight: 700;
         font-size: 13px;
-        color: var(--teal);
-        background: var(--teal-subtle);
+        color: var(--orange);
+        background: var(--orange-subtle);
         padding: 4px 10px;
         display: flex;
         align-items: center;
@@ -184,7 +184,7 @@
       .timer .pulse {
         width: 6px;
         height: 6px;
-        background: var(--teal);
+        background: var(--orange);
         animation: pulse 1.6s ease-in-out infinite;
       }
       @keyframes pulse {
@@ -234,11 +234,11 @@
         color: var(--text-faint);
       }
       .queue-item.active {
-        background: var(--teal-subtle);
-        border-color: var(--teal);
+        background: var(--orange-subtle);
+        border-color: var(--orange);
       }
       .queue-item.active .n {
-        color: var(--teal);
+        color: var(--orange);
       }
       /* the noise being dissolved */
       .noise {
@@ -251,10 +251,10 @@
         font-size: 13px;
         opacity: 0.35;
         text-decoration: line-through;
-        text-decoration-color: var(--teal-dim);
+        text-decoration-color: var(--orange-dim);
       }
       .noise .x {
-        color: var(--teal-dim);
+        color: var(--orange-dim);
         font-family: var(--font-mono);
       }
       .divider-label {
@@ -311,13 +311,13 @@
           transform 0.2s ease;
       }
       .card:hover {
-        border-color: var(--teal);
+        border-color: var(--orange);
         transform: translateY(-3px);
       }
       .card .num {
         font-family: var(--font-mono);
         font-size: 12px;
-        color: var(--teal);
+        color: var(--orange);
         letter-spacing: 0.1em;
       }
       .card h3 {
@@ -368,13 +368,13 @@
         left: 3px;
         width: 18px;
         height: 18px;
-        background: var(--teal);
+        background: var(--orange);
         transition: transform 0.2s ease;
       }
       body.yearly .bt-switch::after { transform: translateX(26px); }
       .bt-save {
-        color: var(--teal);
-        border: 1px solid var(--teal);
+        color: var(--orange);
+        border: 1px solid var(--orange);
         padding: 4px 10px;
       }
       .price-grid {
@@ -461,7 +461,7 @@
         margin-bottom: 22px;
         min-height: 16px;
       }
-      .plan .yearly .hl { color: var(--teal); }
+      .plan .yearly .hl { color: var(--orange); }
       .plan ul {
         list-style: none;
         margin-bottom: 26px;
@@ -475,7 +475,7 @@
         color: var(--text);
       }
       .plan li .check {
-        color: var(--teal);
+        color: var(--orange);
         flex-shrink: 0;
         font-weight: 700;
       }
@@ -521,7 +521,7 @@
         right: 4px;
         top: 16px;
         font-size: 24px;
-        color: var(--teal);
+        color: var(--orange);
         transition: transform 0.2s ease;
         font-weight: 400;
       }
@@ -545,23 +545,25 @@
           <a href="#pricing" class="nav-link nav-hide" data-section="pricing">Pricing</a>
           <a href="#faq" class="nav-link nav-hide" data-section="faq">FAQ</a>
           <a href="#" id="nav-signin" class="nav-hide">Sign in</a>
-          <a href="#pricing" class="btn btn-primary">Add to browser</a>
+          <a href="#pricing" class="btn btn-primary" data-section="pricing">Add to browser</a>
         </div>
       </div>
     </nav>
 
+    <div id="page-overlay" aria-hidden="true"></div>
+
     <header class="hero" id="home">
       <div class="wrap hero-grid">
         <div>
-          <span class="eyebrow">YouTube focus mode</span>
-          <h1>
+          <span class="eyebrow" data-reveal>YouTube focus mode</span>
+          <h1 data-reveal style="--reveal-delay:80">
             Study on YouTube. <span class="accent">Without YouTube.</span>
           </h1>
-          <p class="sub">
+          <p class="sub" data-reveal style="--reveal-delay:160">
             Turn any playlist into a clean study space. No recommendations, no
             comments, no autoplay. Just the videos you chose.
           </p>
-          <div class="store-buttons">
+          <div class="store-buttons" data-reveal style="--reveal-delay:240">
             <!-- TODO: replace href="#" with your Chrome Web Store listing URL -->
             <a
               href="#"
@@ -623,7 +625,7 @@
           </p>
         </div>
 
-        <div class="device" aria-hidden="true">
+        <div class="device" aria-hidden="true" data-reveal style="--reveal-delay:320">
           <div class="device-bar">
             <span class="dot"></span><span class="dot"></span
             ><span class="dot"></span>
@@ -668,7 +670,7 @@
     <!-- Social proof bar -->
     <div class="social-proof">
       <div class="wrap">
-        <div class="proof-stats">
+        <div class="proof-stats" data-reveal>
           <span class="proof-item"><strong>10K+</strong> active learners</span>
           <span class="proof-item"><strong>4.9</strong> Chrome Web Store rating</span>
           <span class="proof-item"><strong>2</strong> playlists free forever</span>
@@ -680,12 +682,12 @@
     <section class="problem-solution">
       <div class="wrap">
         <div class="ps-grid">
-          <div class="ps-card ps-problem">
+          <div class="ps-card ps-problem" data-reveal>
             <span class="ps-icon">✕</span>
             <h3>Distracted &amp; scrolling</h3>
             <p>You open a lecture. YouTube recommends something else. An hour later, you're watching shorts you didn't choose.</p>
           </div>
-          <div class="ps-card ps-solution">
+          <div class="ps-card ps-solution" data-reveal style="--reveal-delay:120">
             <span class="ps-icon">✓</span>
             <h3>Focused &amp; in control</h3>
             <p>You pick the playlist. Possiber hides everything else. Your queue plays in order, no distractions, no rabbit holes.</p>
@@ -698,17 +700,17 @@
     <section class="mini-features">
       <div class="wrap">
         <div class="mini-grid">
-          <div class="mini-card">
+          <div class="mini-card" data-reveal>
             <span class="mini-num">01</span>
             <h4>Your queue, every new tab</h4>
             <p>Open a tab, see what's next. One click to resume exactly where you left off.</p>
           </div>
-          <div class="mini-card">
+          <div class="mini-card" data-reveal style="--reveal-delay:100">
             <span class="mini-num">02</span>
             <h4>No recommendations, no comments</h4>
             <p>Possiber strips away everything that isn't your playlist. Just the lesson in front of you.</p>
           </div>
-          <div class="mini-card">
+          <div class="mini-card" data-reveal style="--reveal-delay:200">
             <span class="mini-num">03</span>
             <h4>Pomodoro + progress tracking</h4>
             <p>Focus timers, checkmarks, streaks. See your progress grow over days and weeks.</p>
@@ -723,9 +725,9 @@
     <section class="showcase" id="features">
       <div class="wrap">
         <div class="section-hero">
-          <span class="eyebrow">Features</span>
-          <h2>Built for finishing what you started.</h2>
-          <p>
+          <span class="eyebrow" data-reveal>Features</span>
+          <h2 data-reveal style="--reveal-delay:80">Built for finishing what you started.</h2>
+          <p data-reveal style="--reveal-delay:160">
             Every feature does one thing: keep your attention on the lesson in
             front of you.
           </p>
@@ -733,11 +735,11 @@
 
         <!-- Group: Focus Tools -->
         <div class="feature-group">
-          <h3 class="group-title">Focus Tools</h3>
-          <p class="group-sub">Everything you need to start, track, and resume your study sessions.</p>
+          <h3 class="group-title" data-reveal>Focus Tools</h3>
+          <p class="group-sub" data-reveal style="--reveal-delay:60">Everything you need to start, track, and resume your study sessions.</p>
 
         <!-- 01 — New tab -->
-        <div class="show-row">
+        <div class="show-row" data-reveal>
           <div class="show-media">
             <div class="frame" aria-hidden="true">
               <div class="frame-bar">
@@ -797,7 +799,7 @@
         </div>
 
         <!-- 03 — Progress + checkmarks -->
-        <div class="show-row">
+        <div class="show-row" data-reveal>
           <div class="show-media">
             <div class="frame" aria-hidden="true">
               <div class="frame-bar">
@@ -827,7 +829,7 @@
           </div>
         </div>
         <!-- 04 — Resume where you left off -->
-        <div class="show-row flip">
+        <div class="show-row flip" data-reveal>
           <div class="show-media">
             <div class="frame" aria-hidden="true">
               <div class="frame-bar">
@@ -844,9 +846,9 @@
                   <span class="mock-check done">✓</span>
                   <span style="flex:1"><span class="mock-line" style="width:50%"></span></span>
                 </div>
-                <div class="mock-row" style="background:var(--teal-subtle);border:1px solid var(--teal);padding:8px 10px;margin-top:4px">
-                  <span class="mock-check" style="border-color:var(--teal);color:var(--teal)">▶</span>
-                  <span style="flex:1;font-family:var(--font-mono);font-size:12px;color:var(--teal)">Eigenvalues, intuitively</span>
+                <div class="mock-row" style="background:var(--orange-subtle);border:1px solid var(--orange);padding:8px 10px;margin-top:4px">
+                  <span class="mock-check" style="border-color:var(--orange);color:var(--orange)">▶</span>
+                  <span style="flex:1;font-family:var(--font-mono);font-size:12px;color:var(--orange)">Eigenvalues, intuitively</span>
                 </div>
               </div>
             </div>
@@ -863,7 +865,7 @@
         </div>
 
         <!-- 05 — Pomodoro + Coins -->
-        <div class="show-row">
+        <div class="show-row" data-reveal>
           <div class="show-media">
             <div class="frame" aria-hidden="true">
               <div class="frame-bar">
@@ -873,7 +875,7 @@
               <div class="frame-body" style="text-align:center;padding:28px 20px">
                 <div class="mock-timer-big">18:43</div>
                 <div class="mock-timer-label">Focus · Round 2 of 4</div>
-                <div style="margin-top:16px;padding:8px 14px;background:var(--teal-subtle);border:1px solid var(--teal);font-family:var(--font-mono);font-size:13px;color:var(--teal);display:inline-block">
+                <div style="margin-top:16px;padding:8px 14px;background:var(--orange-subtle);border:1px solid var(--orange);font-family:var(--font-mono);font-size:13px;color:var(--orange);display:inline-block">
                   +30 coins earned
                 </div>
                 <div style="display:flex;gap:10px;justify-content:center;margin-top:16px">
@@ -901,11 +903,11 @@
 
         <!-- Group: Distraction Block -->
         <div class="feature-group">
-          <h3 class="group-title">Distraction Block</h3>
-          <p class="group-sub">Remove the noise. Keep only what you need.</p>
+          <h3 class="group-title" data-reveal>Distraction Block</h3>
+          <p class="group-sub" data-reveal style="--reveal-delay:60">Remove the noise. Keep only what you need.</p>
 
         <!-- 06 — No distractions -->
-        <div class="show-row flip">
+        <div class="show-row flip" data-reveal>
           <div class="show-media">
             <div class="frame" aria-hidden="true">
               <div class="frame-bar">
@@ -917,7 +919,7 @@
                 <div class="mock-row mock-strike"><span style="font-size:12px;width:80px;flex-shrink:0">Sidebar</span><span class="mock-line" style="width:55%"></span></div>
                 <div class="mock-row mock-strike"><span style="font-size:12px;width:80px;flex-shrink:0">Comments</span><span class="mock-line" style="width:65%"></span></div>
                 <div class="mock-row mock-strike"><span style="font-size:12px;width:80px;flex-shrink:0">Recommended</span><span class="mock-line" style="width:50%"></span></div>
-                <div style="margin-top:14px;padding:10px 12px;background:var(--teal-subtle);border:1px solid var(--teal);font-family:var(--font-mono);font-size:11px;color:var(--teal)">
+                <div style="margin-top:14px;padding:10px 12px;background:var(--orange-subtle);border:1px solid var(--orange);font-family:var(--font-mono);font-size:11px;color:var(--orange)">
                   ✓ Only your video remains
                 </div>
               </div>
@@ -940,7 +942,7 @@
         </div>
 
         <!-- 07 — Coins & Gamification -->
-        <div class="show-row">
+        <div class="show-row" data-reveal>
           <div class="show-media">
             <div class="frame" aria-hidden="true">
               <div class="frame-bar">
@@ -949,7 +951,7 @@
               </div>
               <div class="frame-body" style="text-align:center;padding:28px 20px">
                 <div style="font-size:13px;color:var(--text-faint);margin-bottom:4px">Session complete!</div>
-                <div style="font-family:var(--font-mono);font-size:28px;font-weight:700;color:var(--teal);margin-bottom:16px">+70 coins</div>
+                <div style="font-family:var(--font-mono);font-size:28px;font-weight:700;color:var(--orange);margin-bottom:16px">+70 coins</div>
                 <div style="display:flex;gap:10px;justify-content:center">
                   <span class="btn btn-primary" style="pointer-events:none;font-size:13px">Continue</span>
                   <span class="btn btn-ghost" style="pointer-events:none;font-size:13px">End session</span>
@@ -976,17 +978,17 @@
         </div>
 
         <!-- 08 — Dashboard -->
-        <div class="show-row flip">
+        <div class="show-row flip" data-reveal>
           <div class="show-media">
             <div class="frame" aria-hidden="true">
               <div class="frame-bar">
                 <span class="dot"></span><span class="dot"></span><span class="dot"></span>
-                <span class="frame-url">Possiber: Dashboard</span>
+                <span class="frame-url">Possiber · Dashboard</span>
               </div>
               <div class="frame-body">
                 <div class="mock-label">Your playlists</div>
                 <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:8px">
-                  <div style="background:var(--bg-raised);border:1px solid var(--border);padding:12px">
+                  <div style="background:var(--bg-raised);border:1px solid var(--orange);padding:12px">
                     <div class="mock-thumb" style="width:100%;height:40px;margin-bottom:8px"></div>
                     <div class="mock-line" style="width:70%;height:7px"></div>
                     <div style="font-family:var(--font-mono);font-size:10px;color:var(--text-faint);margin-top:4px">5 / 12 · 42%</div>
@@ -1019,7 +1021,7 @@
         </div>
 
         <!-- 09 — Themes -->
-        <div class="show-row">
+        <div class="show-row" data-reveal>
           <div class="show-media">
             <div class="frame" aria-hidden="true">
               <div class="frame-bar">
@@ -1029,13 +1031,13 @@
               <div class="frame-body" style="padding:20px">
                 <div class="mock-label">Choose your theme</div>
                 <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:10px">
-                  <div style="padding:14px;border:2px solid var(--teal);background:var(--teal-subtle)">
+                  <div style="padding:14px;border:2px solid var(--orange);background:var(--orange-subtle)">
                     <div style="display:flex;gap:6px;margin-bottom:8px">
                       <span style="width:16px;height:16px;background:#17171b;border:1px solid var(--border)"></span>
                       <span style="width:16px;height:16px;background:#d1c400;border:1px solid var(--border)"></span>
                       <span style="width:16px;height:16px;background:#e2e2e6;border:1px solid var(--border)"></span>
                     </div>
-                    <div style="font-family:var(--font-mono);font-size:11px;color:var(--teal)">Dark</div>
+                    <div style="font-family:var(--font-mono);font-size:11px;color:var(--orange)">Dark</div>
                   </div>
                   <div style="padding:14px;border:1px solid var(--border)">
                     <div style="display:flex;gap:6px;margin-bottom:8px">
@@ -1080,7 +1082,7 @@
         </div>
 
         <!-- 10 — Exit Challenges -->
-        <div class="show-row flip">
+        <div class="show-row flip" data-reveal>
           <div class="show-media">
             <div class="frame" aria-hidden="true">
               <div class="frame-bar">
@@ -1116,7 +1118,7 @@
         </div>
 
         <!-- 11 — Whitelist domains -->
-        <div class="show-row">
+        <div class="show-row" data-reveal>
           <div class="show-media">
             <div class="frame" aria-hidden="true">
               <div class="frame-bar">
@@ -1126,17 +1128,17 @@
               <div class="frame-body" style="padding:20px">
                 <div class="mock-label">Allowed during focus</div>
                 <div class="mock-row" style="margin-top:8px">
-                  <span style="font-size:12px;color:var(--teal);width:14px">✓</span>
+                  <span style="font-size:12px;color:var(--orange);width:14px">✓</span>
                   <span style="font-size:13px;flex:1">youtube.com</span>
                   <span style="font-family:var(--font-mono);font-size:10px;color:var(--text-faint)">always</span>
                 </div>
                 <div class="mock-row">
-                  <span style="font-size:12px;color:var(--teal);width:14px">✓</span>
+                  <span style="font-size:12px;color:var(--orange);width:14px">✓</span>
                   <span style="font-size:13px;flex:1">open.spotify.com</span>
                   <span style="font-family:var(--font-mono);font-size:10px;color:var(--text-faint)">added</span>
                 </div>
                 <div class="mock-row">
-                  <span style="font-size:12px;color:var(--teal);width:14px">✓</span>
+                  <span style="font-size:12px;color:var(--orange);width:14px">✓</span>
                   <span style="font-size:13px;flex:1">notion.so</span>
                   <span style="font-family:var(--font-mono);font-size:10px;color:var(--text-faint)">added</span>
                 </div>
@@ -1161,7 +1163,7 @@
         </div>
 
         <!-- 12 — Navigation guard -->
-        <div class="show-row flip">
+        <div class="show-row flip" data-reveal>
           <div class="show-media">
             <div class="frame" aria-hidden="true">
               <div class="frame-bar">
@@ -1172,7 +1174,7 @@
                 <div style="font-size:32px;margin-bottom:8px">🛡️</div>
                 <div style="font-family:var(--font-head);font-weight:600;font-size:16px;margin-bottom:6px">Stay on track</div>
                 <div style="font-size:13px;color:var(--text-muted);margin-bottom:16px">Navigation to reddit.com is blocked during focus.</div>
-                <div style="padding:10px 14px;background:var(--teal-subtle);border:1px solid var(--teal);font-family:var(--font-mono);font-size:11px;color:var(--teal)">
+                <div style="padding:10px 14px;background:var(--orange-subtle);border:1px solid var(--orange);font-family:var(--font-mono);font-size:11px;color:var(--orange)">
                   → Redirecting to your playlist
                 </div>
               </div>
@@ -1195,11 +1197,11 @@
 
         <!-- Group: Power Features -->
         <div class="feature-group">
-          <h3 class="group-title">Power Features</h3>
-          <p class="group-sub">Organize, customize, and export your study workflow.</p>
+          <h3 class="group-title" data-reveal>Power Features</h3>
+          <p class="group-sub" data-reveal style="--reveal-delay:60">Organize, customize, and export your study workflow.</p>
 
         <!-- 13 — Collections (Pro) -->
-        <div class="show-row">
+        <div class="show-row" data-reveal>
           <div class="show-media">
             <div class="frame" aria-hidden="true">
               <div class="frame-bar">
@@ -1210,12 +1212,12 @@
                 <div class="mock-label">Your collections</div>
                 <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:8px">
                   <div style="background:var(--bg-raised);border:1px solid var(--border);padding:12px">
-                    <div style="font-family:var(--font-mono);font-size:11px;color:var(--teal);margin-bottom:6px">Physics</div>
+                    <div style="font-family:var(--font-mono);font-size:11px;color:var(--orange);margin-bottom:6px">Physics</div>
                     <div class="mock-line" style="width:60%;height:6px;margin-bottom:4px"></div>
                     <div style="font-family:var(--font-mono);font-size:10px;color:var(--text-faint)">3 playlists</div>
                   </div>
                   <div style="background:var(--bg-raised);border:1px solid var(--border);padding:12px">
-                    <div style="font-family:var(--font-mono);font-size:11px;color:var(--teal);margin-bottom:6px">Chemistry</div>
+                    <div style="font-family:var(--font-mono);font-size:11px;color:var(--orange);margin-bottom:6px">Chemistry</div>
                     <div class="mock-line" style="width:45%;height:6px;margin-bottom:4px"></div>
                     <div style="font-family:var(--font-mono);font-size:10px;color:var(--text-faint)">2 playlists</div>
                   </div>
@@ -1243,7 +1245,7 @@
         </div>
 
         <!-- 14 — To-Do widget (Pro) -->
-        <div class="show-row flip">
+        <div class="show-row flip" data-reveal>
           <div class="show-media">
             <div class="frame" aria-hidden="true">
               <div class="frame-bar">
@@ -1286,7 +1288,7 @@
         </div>
 
         <!-- 15 — Auto-mark complete -->
-        <div class="show-row">
+        <div class="show-row" data-reveal>
           <div class="show-media">
             <div class="frame" aria-hidden="true">
               <div class="frame-bar">
@@ -1300,7 +1302,7 @@
                   <span>16:48 / 18:20</span>
                   <span>92%</span>
                 </div>
-                <div style="padding:10px 12px;background:var(--teal-subtle);border:1px solid var(--teal);font-family:var(--font-mono);font-size:11px;color:var(--teal)">
+                <div style="padding:10px 12px;background:var(--orange-subtle);border:1px solid var(--orange);font-family:var(--font-mono);font-size:11px;color:var(--orange)">
                   ✓ Auto-marked complete at 90%
                 </div>
               </div>
@@ -1321,7 +1323,7 @@
         </div>
 
         <!-- 16 — Export / Import -->
-        <div class="show-row flip">
+        <div class="show-row flip" data-reveal>
           <div class="show-media">
             <div class="frame" aria-hidden="true">
               <div class="frame-bar">
@@ -1331,9 +1333,9 @@
               <div class="frame-body" style="padding:24px 20px">
                 <div class="mock-label">Data backup</div>
                 <div style="display:flex;gap:10px;margin-top:10px">
-                  <div style="flex:1;padding:14px;border:1px solid var(--teal);background:var(--teal-subtle);text-align:center">
+                  <div style="flex:1;padding:14px;border:1px solid var(--orange);background:var(--orange-subtle);text-align:center">
                     <div style="font-size:20px;margin-bottom:4px">📦</div>
-                    <div style="font-family:var(--font-mono);font-size:11px;color:var(--teal)">Export JSON</div>
+                    <div style="font-family:var(--font-mono);font-size:11px;color:var(--orange)">Export JSON</div>
                   </div>
                   <div style="flex:1;padding:14px;border:1px solid var(--border);text-align:center">
                     <div style="font-size:20px;margin-bottom:4px">📥</div>
@@ -1362,7 +1364,7 @@
         </div>
 
         <!-- 17 — Coin shop -->
-        <div class="show-row">
+        <div class="show-row" data-reveal>
           <div class="show-media">
             <div class="frame" aria-hidden="true">
               <div class="frame-bar">
@@ -1379,7 +1381,7 @@
                       <span style="width:12px;height:12px;background:#27ff97;border:1px solid var(--border)"></span>
                     </div>
                     <div style="font-size:12px;margin-bottom:4px">Midnight theme</div>
-                    <div style="font-family:var(--font-mono);font-size:10px;color:var(--teal)">500 coins</div>
+                    <div style="font-family:var(--font-mono);font-size:10px;color:var(--orange)">500 coins</div>
                   </div>
                   <div style="padding:12px;border:1px solid var(--border);background:var(--bg-raised);opacity:.5">
                     <div style="display:flex;gap:4px;margin-bottom:6px">
@@ -1419,9 +1421,9 @@
     <section class="pricing" id="pricing">
       <div class="wrap">
         <div class="section-hero">
-          <span class="eyebrow">Pricing</span>
-          <h2>Start free. Upgrade when you outgrow it.</h2>
-          <p>
+          <span class="eyebrow" data-reveal>Pricing</span>
+          <h2 data-reveal style="--reveal-delay:80">Start free. Upgrade when you outgrow it.</h2>
+          <p data-reveal style="--reveal-delay:160">
             No trials, no credit card to begin. Pay monthly, save with yearly, or
             own it for life.
           </p>
@@ -1442,7 +1444,7 @@
 
         <div class="price-grid">
           <!-- PLAN 01 — Free -->
-          <div class="plan">
+          <div class="plan" data-reveal>
             <div class="plan-head">
               <span class="tag">Free</span>
               <span class="plan-no">PLAN.01</span>
@@ -1462,7 +1464,7 @@
           </div>
 
           <!-- PLAN 02 — Pro (best value) -->
-          <div class="plan pro">
+          <div class="plan pro" data-reveal style="--reveal-delay:100">
             <span class="badge">Best value</span>
             <div class="plan-head">
               <span class="tag">Possiber Pro</span>
@@ -1492,7 +1494,7 @@
           </div>
 
           <!-- PLAN 03 — Lifetime -->
-          <div class="plan">
+          <div class="plan" data-reveal style="--reveal-delay:200">
             <div class="plan-head">
               <span class="tag">Lifetime</span>
               <span class="plan-no">PLAN.03</span>
@@ -1511,8 +1513,8 @@
 
         <!-- Feature comparison table -->
         <div class="comparison-table">
-          <h3 class="comparison-title">Free vs Pro vs Lifetime</h3>
-          <table>
+          <h3 class="comparison-title" data-reveal>Free vs Pro vs Lifetime</h3>
+          <table data-reveal style="--reveal-delay:80">
             <thead>
               <tr>
                 <th scope="col">Feature</th>
@@ -1582,8 +1584,8 @@
     <section class="faq" id="faq">
       <div class="wrap faq-wrap">
         <div class="section-hero">
-          <span class="eyebrow">FAQ</span>
-          <h2>Questions, answered.</h2>
+          <span class="eyebrow" data-reveal>FAQ</span>
+          <h2 data-reveal style="--reveal-delay:80">Questions, answered.</h2>
         </div>
 
         <!-- Category jump links -->
